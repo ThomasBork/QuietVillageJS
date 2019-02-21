@@ -21,15 +21,21 @@
   <div id="game">
     <ul id="tabs">
       <li>
-        <div id="heroes-tab-button" class="tab-button selected">
-          <img src="img/heroes-tab.png"/>
-          <span class="tab-text">Heroes</span>
+        <div id="workers-tab-button" class="tab-button">
+          <img src="img/workers-tab.png"/>
+          <span class="tab-text">Workers</span>
         </div>
       </li>
       <li>
         <div id="buildings-tab-button" class="tab-button">
           <img src="img/buildings-tab.png"/>
           <span class="tab-text">Buildings</span>
+        </div>
+      </li>
+      <li>
+        <div id="heroes-tab-button" class="tab-button">
+          <img src="img/heroes-tab.png"/>
+          <span class="tab-text">Heroes</span>
         </div>
       </li>
       <li>
@@ -45,8 +51,12 @@
         </div>
       </li>
     </ul>
+  
+    <div id="workers-tab" class="tab">
+      
+    </div>
 
-    <div id="heroes-tab" class="tab selected">
+    <div id="heroes-tab" class="tab">
       <ul id="heroes-container">
         <ul id="heroes">
         </ul>
@@ -77,18 +87,15 @@
     </div>
 
     <ul id="resources">
-      <li id="player-gold-container">
-        <span class="label">Collected Gold:</span>
-        <span id="player-gold">0</span>
-      </li>
-      <li id="game-gold-container">
-        <span class="label">Available Gold:</span>
-        <span id="game-gold">0</span>
-      </li>
     </ul>
   
 
     <div id="templates">
+      <li class="resource">
+        <span class="label">Available Gold:</span>
+        <span class="value">0</span>
+      </li>
+
       <li class="hero">
         <span class="view-details-button icon-button">View</span>
         <ul>
@@ -140,7 +147,28 @@
 
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src='js/script.js'></script>
+
+  <script src='js/enums/enums.js'></script>
+
+  <script src='js/data/Data.js'></script>
+  <script src='js/data/buildings.js'></script>
+  <script src='js/data/passives.js'></script>
+  <script src='js/data/resources.js'></script>
+
+  <script src='js/game/Building.js'></script>
+  <script src='js/game/Game.js'></script>
+  <script src='js/game/Hero.js'></script>
+  <script src='js/game/Item.js'></script>
+  <script src='js/game/Job.js'></script>
+  <script src='js/game/PassiveSkill.js'></script>
+  <script src='js/game/Player.js'></script>
+  <script src='js/game/Resource.js'></script>
+  <script src='js/game/Workers.js'></script>
+
+  <script src='js/rendering/GameRenderer.js'></script>
+  <script src='js/rendering/UIElement.js'></script>
+
+  <script src='js/init.js'></script>
 
 </body>
 </html>
