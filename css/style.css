@@ -1,0 +1,271 @@
+/* Global */
+
+body {
+    background-color: #141414;
+    color: #f2f2f2;
+}
+
+a {
+    color: #6060ff;
+}
+
+.button {
+    background-color: #6060ff;
+    display: inline-block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    cursor: pointer;
+}
+
+.icon-button {
+    cursor: pointer;
+}
+
+#templates {
+    display: none;
+}
+
+ul {
+    list-style: none;
+}
+
+/* Header */
+
+#header {
+    width: 100%;
+    height: 50px;
+    background-color: #303030;
+}
+
+#timer {
+    font-size: 40px;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+#high-score-container {
+    display: none;
+}
+
+#new-game-button {
+    float: right;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+/* Game */
+
+#game {
+    display: none;
+    justify-content: space-between;
+    height: calc(100% - 50px);
+}
+
+.title {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+/* Tabs */
+
+.tab-button {
+    padding: 5px;
+    background-color: #303030;
+    margin-top: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+.tab-button.selected {
+    background-color: #a03030;
+    user-select: none;
+}
+
+.tab-button .tab-text {
+    text-align: center;
+}
+
+.tab:not(.selected) {
+    display: none;
+}
+
+.tab {
+    display: flex;
+    flex: 1 0 0;
+}
+
+/* Heroes */
+
+#heroes-container {
+    height: 100%;
+    overflow-y: auto;
+}
+
+#heroes {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.hero {
+    position: relative;
+    background-color: #303030;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.hero.selected {
+    background-color: #a03030;
+}
+
+.hero > ul > li {
+    margin-bottom: 5px;
+}
+
+.hero .view-details-button {
+    background-color: #141414;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    padding: 5px;
+}
+
+/* Hero Details */
+
+#hero-details {
+    position: relative;
+    display: none;
+    background-color: #303030;
+    margin: 5px;
+    padding: 5px;
+    flex: 1 0 0;
+}
+
+#hero-details .close-button {
+    background-color: #141414;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    padding: 5px;
+}
+
+#items {
+    overflow-y: auto;
+    height: 100%;
+}
+
+.item {
+    width: 400px;
+    height: 100px;
+    position: relative;
+    background-color: #141414;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.item.enabled.bought {
+    background-color: #039030;
+}
+
+.item.bought {
+    background-color: #036030;
+}
+
+.item .header {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.item .header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Buildings */
+
+
+.buildings {
+    overflow-y: auto;
+    height: 100%;
+}
+
+.building {
+    width: 400px;
+    height: 100px;
+    position: relative;
+    background-color: #303030;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.building.enabled.bought {
+    background-color: #039030;
+}
+
+.building.bought {
+    background-color: #036030;
+}
+
+.building .header {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.building .header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Passives */
+
+#passives-tab {
+    margin-top: 5px;
+}
+
+#passives {
+    overflow-y: auto;
+    height: 100%;
+} 
+
+.passive-skill {
+    width: 400px;
+    height: 100px;
+    position: relative;
+    background-color: #303030;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.passive-skill.bought {
+    background-color: #036030;
+}
+
+.passive-skill .header {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.passive-skill .header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Resources */
+
+#resources {
+    padding: 10px;
+    width: 250px;
+}
+
+#game-gold-container {
+    color: #a0a0a0;
+}
+
+#resources > li {
+    display: flex;
+    justify-content: space-between;
+}

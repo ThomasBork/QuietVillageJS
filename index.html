@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Box Hero Simulator</title>
+    
+  <link href="css/zero.css" type="text/css" rel="stylesheet">
+  <link href="css/style.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+  <div id="header">
+    <span id="timer"></span>
+    <span id="high-score-container">
+      <span>High Score:</span>
+      <span id="high-score"></span>
+    </span>
+    <div id="new-game-button" class="button" onclick="newGame()">New Game</div>
+  </div>
+
+  <div id="game">
+    <ul id="tabs">
+      <li>
+        <div id="heroes-tab-button" class="tab-button selected">
+          <img src="img/heroes-tab.png"/>
+          <span class="tab-text">Heroes</span>
+        </div>
+      </li>
+      <li>
+        <div id="buildings-tab-button" class="tab-button">
+          <img src="img/buildings-tab.png"/>
+          <span class="tab-text">Buildings</span>
+        </div>
+      </li>
+      <li>
+        <div id="passives-tab-button" class="tab-button">
+          <img src="img/passives-tab.png"/>
+          <span class="tab-text">Passives</span>
+        </div>
+      </li>
+      <li>
+        <div id="actives-tab-button" class="tab-button">
+          <img src="img/actives-tab.png"/>
+          <span class="tab-text">Actives</span>
+        </div>
+      </li>
+    </ul>
+
+    <div id="heroes-tab" class="tab selected">
+      <ul id="heroes-container">
+        <ul id="heroes">
+        </ul>
+        <div id="new-hero-button" class="button">
+          <span>Buy hero (</span>
+          <span id="new-hero-cost">0</span>
+          <span>gold )</span>
+        </div>
+      </ul>
+      <div id="hero-details">
+        <span class="close-button icon-button">Close</span>
+        <ul id="items">
+        </ul>
+      </div>
+    </div>
+  
+    <div id="buildings-tab" class="tab">
+      <ul id="buildings">
+      </ul>
+    </div>
+  
+    <div id="passives-tab" class="tab">
+      <ul id="passives">
+      </ul>
+    </div>
+  
+    <div id="actives-tab" class="tab">
+    </div>
+
+    <ul id="resources">
+      <li id="player-gold-container">
+        <span class="label">Collected Gold:</span>
+        <span id="player-gold">0</span>
+      </li>
+      <li id="game-gold-container">
+        <span class="label">Available Gold:</span>
+        <span id="game-gold">0</span>
+      </li>
+    </ul>
+  
+
+    <div id="templates">
+      <li class="hero">
+        <span class="view-details-button icon-button">View</span>
+        <ul>
+          <li>
+            <span class="label">Level:</span>
+            <span class="level">0</span>
+          </li>
+          <li>
+            <span class="label">Damage:</span>
+            <span class="total-damage">0</span>
+          </li>
+          <li>
+            <span class="label">Collection:</span>
+            <span class="total-collection">0</span>
+          </li>
+          <li>
+            <span class="label">Collect</span>
+            <input type="range" min="0" max="100" value="100" class="damageToCollectionRatio">
+            <span class="label">Damage</span>
+          </li>
+        </ul>
+      </li>
+
+      <li class="item">
+        <div class="header">
+          <span class="name"></span>
+          <span class="cost"></span>
+        </div>
+        <span class="description"></span>
+      </li>
+
+      <li class="building">
+        <div class="header">
+          <span class="name"></span>
+          <span class="cost"></span>
+        </div>
+        <span class="description"></span>
+      </li>
+
+      <li class="passive-skill">
+        <div class="header">
+          <span class="name"></span>
+          <span class="cost"></span>
+        </div>
+        <span class="description"></span>
+      </li>
+    </div>
+  </div>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src='js/script.js'></script>
+
+</body>
+</html>
