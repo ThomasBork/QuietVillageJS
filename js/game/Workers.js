@@ -1,6 +1,6 @@
 class Workers {
-    constructor (game) {
-        this.game = game;
+    constructor (player) {
+        this.player = player;
         this.count = 0;
         this.jobs = [];
 

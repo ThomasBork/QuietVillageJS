@@ -2,7 +2,7 @@ class Player {
     constructor (game) {
         this.game = game;
         this.highScore = null;
-        this.workers = [];
+        this.workers = new Workers();
         this.buildings = [];
         this.heroes = [];
         this.passives = [];

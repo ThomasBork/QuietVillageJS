@@ -38,8 +38,8 @@ class Game {
     }
 
     buyBuilding (building) {
-        if (!building.bought && this.player.gold >= building.cost) {
-            this.player.gold -= building.cost;
+        if (!building.bought) {
+            //this.player.gold -= building.cost;
             building.buy();
             this.renderer.buyBuilding(building);
         }
