@@ -31,6 +31,23 @@ ul {
     list-style: none;
 }
 
+.hover-info {
+    display: none;
+    padding: 5px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: 5px solid #141414;
+    background-color: #303030;
+    overflow: visible;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+:hover > .hover-info {
+    display: flex;
+}
+
 /* Header */
 
 #header {
@@ -68,6 +85,15 @@ ul {
     margin-bottom: 5px;
 }
 
+.label-value-line {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cost-list {
+    width: 200px;
+}
+
 /* Tabs */
 
 .tab-button {
@@ -97,6 +123,24 @@ ul {
 .tab {
     display: flex;
     flex: 1 0 0;
+}
+
+/* Workers */
+
+#workers-container {
+    margin-top: 5px;
+    padding: 5px;
+    width: 400px;
+    background-color: #303030;
+}
+
+.job-line {
+    margin-top: 5px;
+}
+
+.job-line .amount-range, 
+.job-line .amount {
+    vertical-align: middle;
 }
 
 /* Heroes */
@@ -200,6 +244,7 @@ ul {
     background-color: #303030;
     padding: 5px;
     margin-top: 5px;
+    cursor: pointer;
 }
 
 .building.enabled.bought {

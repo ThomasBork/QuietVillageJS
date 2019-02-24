@@ -1,4 +1,5 @@
 const RESOURCE_TYPE = {
     FOOD: "Food",
-    GOLD: "Gold"
+    GOLD: "Gold",
+    WOOD: "Wood"
 };

@@ -1,20 +1,19 @@
 class Building {
-    constructor (name, description, cost, enableFunction) {
+    constructor (name, description, cost, buyFunction) {
         this.name = name;
         this.description = description;
         this.cost = cost;
-        this.enableFunction = enableFunction;
+        this.buyFunction = buyFunction;
         this.enabled = false;
-        this.bought = false;
+        this.amount = 0;
     }
 
     enable () {
         this.enabled = true;
-        this.enableFunction();
     }
 
     buy () {
-        this.bought = true;
-        this.enable();
+        this.amount++;
+        this.buyFunction();
     }
 }

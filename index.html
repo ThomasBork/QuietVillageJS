@@ -21,15 +21,15 @@
   <div id="game">
     <ul id="tabs">
       <li>
-        <div id="workers-tab-button" class="tab-button">
-          <img src="img/workers-tab.png"/>
-          <span class="tab-text">Workers</span>
-        </div>
-      </li>
-      <li>
         <div id="buildings-tab-button" class="tab-button">
           <img src="img/buildings-tab.png"/>
           <span class="tab-text">Buildings</span>
+        </div>
+      </li>
+      <li>
+        <div id="workers-tab-button" class="tab-button">
+          <img src="img/workers-tab.png"/>
+          <span class="tab-text">Workers</span>
         </div>
       </li>
       <li>
@@ -53,7 +53,14 @@
     </ul>
   
     <div id="workers-tab" class="tab">
-      
+      <div id="workers-container">
+        <div id="idle-workers-container">
+          <span>Idle workers:</span>
+          <span id="idle-workers"></span>
+        </div>
+        <ul id="job-list">
+        </ul>
+      </div>
     </div>
 
     <div id="heroes-tab" class="tab">
@@ -92,8 +99,32 @@
 
     <div id="templates">
       <li class="resource">
-        <span class="label">Available Gold:</span>
-        <span class="value">0</span>
+        <span class="label"></span>
+        <span class="value"></span>
+      </li>
+
+      <li class="job-line label-value-line">
+        <span class="name"></span>
+        <span class="range-container">
+          <input type="range" class="amount-range" min="0" max="100" value="0">
+          <span class="amount"></span>
+        </span>
+      </li>
+
+      <li class="resource-line label-value-line">
+        <span class='label'></span>
+        <span class='value'></span>
+      </li>
+
+      <li class="building">
+        <div class="header">
+          <span class="name"></span>
+          <span class="cost"></span>
+        </div>
+        <span class="description"></span>
+        <div class="hover-info">
+          <ul class="cost-list"></ul>
+        </div>
       </li>
 
       <li class="hero">
@@ -127,14 +158,6 @@
         <span class="description"></span>
       </li>
 
-      <li class="building">
-        <div class="header">
-          <span class="name"></span>
-          <span class="cost"></span>
-        </div>
-        <span class="description"></span>
-      </li>
-
       <li class="passive-skill">
         <div class="header">
           <span class="name"></span>
@@ -148,10 +171,12 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+  <script src='js/utils/extensions.js'></script>
   <script src='js/enums/enums.js'></script>
 
   <script src='js/data/Data.js'></script>
   <script src='js/data/buildings.js'></script>
+  <script src='js/data/jobs.js'></script>
   <script src='js/data/passives.js'></script>
   <script src='js/data/resources.js'></script>
 
@@ -163,7 +188,6 @@
   <script src='js/game/PassiveSkill.js'></script>
   <script src='js/game/Player.js'></script>
   <script src='js/game/Resource.js'></script>
-  <script src='js/game/Workers.js'></script>
 
   <script src='js/rendering/GameRenderer.js'></script>
   <script src='js/rendering/UIElement.js'></script>

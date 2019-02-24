@@ -6,4 +6,10 @@ class Resource {
         this.income = 0;
         this.enabled = false;
     }
+
+    discardAboveCap () {
+        if (this.amount > this.cap) {
+            this.amount = this.cap;
+        }
+    }
 }

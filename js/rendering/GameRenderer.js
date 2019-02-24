@@ -30,8 +30,14 @@ class GameRenderer {
         this.domActivesTab = document.getElementById('actives-tab');
         this.domTabs = [this.domWorkersTab, this.domBuildingsTab, this.domHeroesTab, this.domPassivesTab, this.domActivesTab];
 
+        // Workers tab
+        this.domIdleWorkers = document.getElementById('idle-workers');
+        this.domJobList = document.getElementById('job-list');
+
+        // Misc
         this.resources = [];
 
+        this.jobs = [];
         this.heroes = [];
         this.buildings = [];
         this.passives = [];
@@ -47,9 +53,33 @@ class GameRenderer {
         return newNode;
     }
     
-    prettyNumber (number, decimals) {
-        const multiplier = Math.pow(10, decimals);
-        return Math.floor(number * multiplier) / multiplier;
+    prettyNumber (number, maxDecimals, minDecimals) {
+        if (maxDecimals === undefined) {
+            maxDecimals = 2;
+        }
+        if (minDecimals === undefined) {
+            minDecimals = maxDecimals;
+        }
+        number += 0.0001; // Floating point fix.
+        const multiplier = Math.pow(10, maxDecimals);
+        const roundedNumber = Math.floor(number * multiplier) / multiplier;
+        if (minDecimals) {
+            return roundedNumber.toFixed(minDecimals);
+        } else {
+            return roundedNumber;
+        }
+    }
+
+    resetHoverInfoHoverFuntions() {
+        window.onmousemove = function (event) {
+            document.getElementsByClassName('hover-info').forEach(domHover => {
+                const boundingRect = domHover.parentElement.getBoundingClientRect();
+                const left = event.clientX - boundingRect.x + 10;
+                const top = event.clientY - boundingRect.y - 5;
+                domHover.style.left = left + 'px';
+                domHover.style.top = top + 'px';
+            });
+        }
     }
 
     startGame () {
@@ -57,7 +87,8 @@ class GameRenderer {
         this.addPassives();
         this.domGameContainer.style.display = 'flex';
         this.closeHeroDetails();
-        this.selectWorkersTab();
+        this.selectBuildingsTab();
+        this.resetHoverInfoHoverFuntions();
     }
 
     onResourceEnabled (resource) {
@@ -72,11 +103,13 @@ class GameRenderer {
         this.resources = [];
         resourceTypes.forEach(resourceType => {
             const resource = this.game.player.resources[resourceType];
-            const newDomElement = this.cloneTemplate('.resource');
-            const label = newDomElement.querySelector('.label');
-            label.innerHTML = resource.type;
-            this.domResourcesContainer.appendChild(newDomElement);
-            this.resources.push(new UIElement(resource, newDomElement));
+            if (resource.enabled) {
+                const newDomElement = this.cloneTemplate('.resource');
+                const label = newDomElement.querySelector('.label');
+                label.innerHTML = resource.type;
+                this.domResourcesContainer.appendChild(newDomElement);
+                this.resources.push(new UIElement(resource, newDomElement));
+            }
         });
 
         this.updateResources ();
@@ -85,11 +118,49 @@ class GameRenderer {
     updateResources() {
         this.resources.forEach(resource => {
             const valueElement = resource.domElement.querySelector('.value');
-            let text = resource.gameElement.amount + '/' + resource.gameElement.cap;
+            let text = this.prettyNumber(resource.gameElement.amount) + ' / ' + this.prettyNumber(resource.gameElement.cap);
             if (resource.gameElement.income !== 0) {
-                text += ' (' + resource.gameElement.income + ')';
+                text += ' (' + this.prettyNumber(resource.gameElement.income) + ')';
             }
             valueElement.innerHTML = text;
+        });
+    }
+
+    onJobEnabled (job) {
+        this.redrawJobs();
+    }
+
+    redrawJobs () {
+        this.removeChildren(this.domJobList);
+
+        this.jobs = [];
+        this.game.player.jobs.forEach(job => {
+            if (job !== this.game.player.idleJob) {
+                const newDomElement = this.cloneTemplate('.job-line');
+                this.domJobList.appendChild(newDomElement);
+                const uiElement = new UIElement(job, newDomElement);
+                this.jobs.push(uiElement);
+
+                const rangeElement = newDomElement.querySelector('.amount-range');
+                rangeElement.addEventListener('input', () => this.game.player.setAmountOfWorkersOnJob(job, rangeElement.value));
+                rangeElement.addEventListener('change', () => this.game.player.setAmountOfWorkersOnJob(job, rangeElement.value));
+            }
+        });
+
+        this.updateJobs();
+    }
+
+    updateJobs () {
+        this.domIdleWorkers.innerHTML = this.game.player.idleJob.workerCount;
+
+        this.jobs.forEach(job => {
+            const nameElement = job.domElement.querySelector('.name');
+            nameElement.innerHTML = job.gameElement.name;
+            const amountElement = job.domElement.querySelector('.amount');
+            amountElement.innerHTML = job.gameElement.workerCount;
+            const rangeElement = job.domElement.querySelector('.amount-range');
+            rangeElement.max = this.game.player.workerCount;
+            rangeElement.value = job.gameElement.workerCount;
         });
     }
 
@@ -137,10 +208,25 @@ class GameRenderer {
             this.buildings.push(uibuilding);
 
             newDomElement.querySelector('.name').innerHTML = building.name;
-            newDomElement.querySelector('.cost').innerHTML = building.cost;
+            //newDomElement.querySelector('.cost').innerHTML = building.cost;
             newDomElement.querySelector('.description').innerHTML = building.description;
 
             newDomElement.addEventListener('click', () => this.game.buyBuilding(building));
+        });
+
+        this.updateBuildingCosts();
+    }
+
+    updateBuildingCosts () {
+        this.buildings.forEach(building => {
+            const costLine = building.domElement.querySelector('.cost-list');
+            this.removeChildren(costLine);
+            Object.keys(building.gameElement.cost).forEach(resourceType => {
+                const newResourceLine = this.cloneTemplate('.resource-line');
+                costLine.appendChild(newResourceLine);
+                newResourceLine.querySelector('.label').innerHTML = resourceType;
+                newResourceLine.querySelector('.value').innerHTML = building.gameElement.cost[resourceType];
+            })
         });
     }
 

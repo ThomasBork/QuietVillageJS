@@ -4,6 +4,9 @@ class Game {
 
         this.player = new Player(this);
         this.player.enableResource (RESOURCE_TYPE.FOOD);
+        this.player.enableResource (RESOURCE_TYPE.WOOD);    
+        this.player.enableJob('Woodcutter');
+        this.player.enableJob('Gatherer');
 
         this.startTime = null;
         this.interval = null;
@@ -67,21 +70,11 @@ class Game {
     }
 
     updateCollection () {
-        this.player.heroes.forEach(hero => {
-            const potentialCollection = hero.collection * this.updateFrequency / 1000;
-            if (this.gold >= potentialCollection) {
-                this.player.gold += potentialCollection;
-                this.gold -= potentialCollection;
-            } else {
-                this.player.gold += this.gold;
-                this.gold = 0;
-            }
-        });
     }
 
     innerUpdate (dTime) {
-        this.dealDamage();
-        this.updateCollection();
+        this.player.handleResourceIncome(dTime);
+        this.player.capResources();
     }
 
     update () {
@@ -89,6 +82,8 @@ class Game {
         while (timeSinceLastUpdate > this.updateFrequency) {
             timeSinceLastUpdate -= this.updateFrequency;
             this.lastUpdate.setTime(this.lastUpdate.getTime() + this.updateFrequency);
+
+            this.innerUpdate(this.updateFrequency);
         }
 
         this.renderer.updateResources();
@@ -97,6 +92,7 @@ class Game {
 
     start () {
         this.startTime = new Date();
+        this.player.recalculateResourceCaps();
         this.renderer.startGame();
 
         this.interval = setInterval(() => {
