@@ -52,6 +52,34 @@ class Player {
         return this.jobs.find(job => job.name === 'Idle');
     }
 
+    hasResources(resources) {
+        return Object.keys(resources).every(resourceType => 
+            this.resources[resourceType].amount >= resources[resourceType]);
+    }
+
+    payResources(resources) {
+        return Object.keys(resources).forEach(resourceType => 
+            this.resources[resourceType].amount -= resources[resourceType]);
+    }
+
+    tryPayingResources(resources) {
+        if (this.hasResources(resources)) {
+            this.payResources(resources);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    buyBuilding (building) {
+        const cost = building.costOfNext;
+        if (this.tryPayingResources(cost)) {
+            building.buy();
+            this.recalculateResourceCaps();
+            this.game.renderer.onBuyBuilding(building);
+        }
+    }
+
     enableResource(resourceType) {
         const resource = this.resources[resourceType];
         resource.enabled = true;
@@ -83,10 +111,20 @@ class Player {
         this.heroes.push(hero);
     }
 
+    getBuilding (name) {
+        return this.buildings.find(b => b.name === name);
+    }
+
     recalculateResourceCaps () {
         this.resources[RESOURCE_TYPE.FOOD].cap = 500;
         this.resources[RESOURCE_TYPE.GOLD].cap = 500;
         this.resources[RESOURCE_TYPE.WOOD].cap = 500;
+
+        for(var i = 0; i<this.getBuilding('Barn').amount; i++) {
+            this.resources[RESOURCE_TYPE.FOOD].cap += 100;
+            this.resources[RESOURCE_TYPE.GOLD].cap += 50;
+            this.resources[RESOURCE_TYPE.WOOD].cap += 100;
+        }
     }
 
     handleResourceIncome (dTime) {

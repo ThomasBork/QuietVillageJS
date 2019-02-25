@@ -134,6 +134,10 @@ ul {
     background-color: #303030;
 }
 
+#workers-tab.selected {
+    display: block;
+}
+
 .job-line {
     margin-top: 5px;
 }

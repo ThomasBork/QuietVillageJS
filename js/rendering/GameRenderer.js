@@ -53,21 +53,55 @@ class GameRenderer {
         return newNode;
     }
     
-    prettyNumber (number, maxDecimals, minDecimals) {
+    prettyNumber (number, maxDecimals, minDecimals, ceil) {
         if (maxDecimals === undefined) {
             maxDecimals = 2;
         }
         if (minDecimals === undefined) {
             minDecimals = maxDecimals;
         }
-        number += 0.0001; // Floating point fix.
+        if (ceil === undefined) {
+            ceil = false;
+        }
         const multiplier = Math.pow(10, maxDecimals);
-        const roundedNumber = Math.floor(number * multiplier) / multiplier;
+        let roundedNumber;
+        if (ceil) {
+            number -= 0.0001; // Floating point fix.
+            roundedNumber = Math.ceil(number * multiplier) / multiplier;
+        } else {
+            number += 0.0001; // Floating point fix.
+            roundedNumber = Math.floor(number * multiplier) / multiplier;
+        }
         if (minDecimals) {
             return roundedNumber.toFixed(minDecimals);
         } else {
             return roundedNumber;
         }
+    }
+
+    prettyDuration (timeInMilliseconds) {
+        const timeInSeconds = Math.floor(timeInMilliseconds / 1000);
+        const seconds = timeInSeconds % 60;
+        const minutes = Math.floor(timeInSeconds / 60);
+        let text = null;
+        if (seconds < 10) {
+            text = minutes + ':0' + seconds;
+        } else {
+            text = minutes + ':' + seconds;
+        }
+        return text;
+    }
+
+    drawTimer () {
+        const time = new Date() - this.game.startTime;
+        const text = this.prettyDuration(time);
+        this.domTimer.innerHTML = text;
+    }
+
+    drawHighScore () {
+        const text = this.prettyDuration(this.game.highScore);
+        this.domHighScore.innerHTML = text;
+        this.domHighScoreContainer.style.display = 'inline';
     }
 
     resetHoverInfoHoverFuntions() {
@@ -86,7 +120,6 @@ class GameRenderer {
         this.addBuildings();
         this.addPassives();
         this.domGameContainer.style.display = 'flex';
-        this.closeHeroDetails();
         this.selectBuildingsTab();
         this.resetHoverInfoHoverFuntions();
     }
@@ -118,7 +151,7 @@ class GameRenderer {
     updateResources() {
         this.resources.forEach(resource => {
             const valueElement = resource.domElement.querySelector('.value');
-            let text = this.prettyNumber(resource.gameElement.amount) + ' / ' + this.prettyNumber(resource.gameElement.cap);
+            let text = this.prettyNumber(resource.gameElement.amount, 0) + ' / ' + this.prettyNumber(resource.gameElement.cap, 0);
             if (resource.gameElement.income !== 0) {
                 text += ' (' + this.prettyNumber(resource.gameElement.income) + ')';
             }
@@ -164,27 +197,6 @@ class GameRenderer {
         });
     }
 
-    addHero (hero) {
-        const newDomElement = this.cloneTemplate('.hero');
-        this.domHeroesContainer.appendChild(newDomElement);
-        const uiHero = new UIElement(hero, newDomElement);
-        this.heroes.push(uiHero);
-        this.updateHero(hero);
-
-        const ratioSlider = newDomElement.querySelector('.damageToCollectionRatio');
-        ratioSlider.addEventListener('input', () => this.game.setHeroDamageToCollectionRatio(hero, ratioSlider.value / 100));
-        ratioSlider.addEventListener('change', () => this.game.setHeroDamageToCollectionRatio(hero, ratioSlider.value / 100));
-
-        const detailsButton = newDomElement.querySelector('.view-details-button');
-        detailsButton.addEventListener('click', (event) => this.showHeroDetails(hero));
-
-        this.updateNewHeroButton();
-
-        if (this.heroes.length > 1) {
-            this.showHeroDetails(hero);
-        }
-    }
-
     addPassives() {
         this.game.player.passives.forEach(passive => {
             const newDomElement = this.cloneTemplate('.passive-skill');
@@ -201,6 +213,7 @@ class GameRenderer {
     }
 
     addBuildings() {
+        this.buildings = [];
         this.game.player.buildings.forEach(building => {
             const newDomElement = this.cloneTemplate('.building');
             this.domBuilingsContainer.appendChild(newDomElement);
@@ -208,24 +221,26 @@ class GameRenderer {
             this.buildings.push(uibuilding);
 
             newDomElement.querySelector('.name').innerHTML = building.name;
-            //newDomElement.querySelector('.cost').innerHTML = building.cost;
             newDomElement.querySelector('.description').innerHTML = building.description;
 
-            newDomElement.addEventListener('click', () => this.game.buyBuilding(building));
+            newDomElement.addEventListener('click', () => this.game.player.buyBuilding(building));
         });
 
-        this.updateBuildingCosts();
+        this.updateBuildings();
     }
 
-    updateBuildingCosts () {
+    updateBuildings () {
         this.buildings.forEach(building => {
+            if (building.gameElement.amount > 0) {
+                building.domElement.querySelector('.amount').innerHTML = building.gameElement.amount;
+            }
             const costLine = building.domElement.querySelector('.cost-list');
             this.removeChildren(costLine);
-            Object.keys(building.gameElement.cost).forEach(resourceType => {
+            Object.keys(building.gameElement.costOfNext).forEach(resourceType => {
                 const newResourceLine = this.cloneTemplate('.resource-line');
                 costLine.appendChild(newResourceLine);
                 newResourceLine.querySelector('.label').innerHTML = resourceType;
-                newResourceLine.querySelector('.value').innerHTML = building.gameElement.cost[resourceType];
+                newResourceLine.querySelector('.value').innerHTML = this.prettyNumber(building.gameElement.costOfNext[resourceType], 0, 0, true);
             })
         });
     }
@@ -238,109 +253,14 @@ class GameRenderer {
         this.game.player.heroes.forEach(hero => this.updateHero(hero));
     }
 
-    buyBuilding(building) {
+    onBuyBuilding(building) {
         const uibuilding = this.buildings.find(p => p.gameElement === building);
 
         uibuilding.domElement.classList.add('bought');
 
         this.game.player.heroes.forEach(hero => this.updateHero(hero));
-    }
 
-    buyItem(item) {
-        const uiItem = this.items.find(i => i.gameElement === item);
-
-        uiItem.domElement.classList.add('bought');
-
-        this.game.player.heroes.forEach(hero => this.updateHero(hero));
-
-        this.updateItem(item);
-    }
-
-    enableItem(item) {
-        const uiItem = this.items.find(i => i.gameElement === item);
-
-        this.items.forEach(i => i.domElement.classList.remove('enabled'));
-        uiItem.domElement.classList.add('enabled');
-
-        this.game.player.heroes.forEach(hero => this.updateHero(hero));
-
-        this.updateItem(item);
-    }
-
-    showHeroDetails (hero) {
-        const uiHero = this.heroes.find(h => h.gameElement === hero);
-        this.domHeroDetails.style.display = 'block';
-        this.heroes.forEach(h => h.domElement.classList.remove('selected'));
-        uiHero.domElement.classList.add('selected');
-
-        this.removeChildren(this.domItems);
-        this.items = [];
-
-        hero.weapons.forEach(item => {
-            const newDomElement = this.cloneTemplate('.item');
-            this.domItems.appendChild(newDomElement);
-            const uiItem = new UIElement(item, newDomElement);
-            this.items.push(uiItem);
-
-            newDomElement.querySelector('.name').innerHTML = item.name;
-            newDomElement.querySelector('.cost').innerHTML = item.cost;
-            newDomElement.querySelector('.description').innerHTML = item.description;
-
-            newDomElement.addEventListener('click', () => this.game.buyItem(item));
-
-            this.updateItem(item);
-        });
-    }
-
-    updateItem(item) {
-        const uiItem = this.items.find(i => i.gameElement === item);
-        if (item.enabled) {
-            uiItem.domElement.classList.add('enabled');
-        }
-        if (item.bought) {
-            uiItem.domElement.classList.add('bought');
-        }
-    }
-
-    updateNewHeroButton () {
-        document.getElementById('new-hero-cost').innerHTML = this.game.player.nextHeroCost;
-    }
-
-    updateHero (hero) {
-        const uiHero = this.heroes.find(h => h.gameElement === hero);
-
-        const gameHero = uiHero.gameElement;
-        const domHero = uiHero.domElement;
-        domHero.querySelector('.level').innerHTML = gameHero.level;
-        domHero.querySelector('.total-damage').innerHTML = this.prettyNumber(gameHero.damage, 2);
-        domHero.querySelector('.total-collection').innerHTML = this.prettyNumber(gameHero.collection, 2);
-        
-        domHero.querySelector('.damageToCollectionRatio').value = Math.floor(gameHero.damageToCollectionRatio * 100);
-    }
-
-    prettyDuration (timeInMilliseconds) {
-        const timeInSeconds = Math.floor(timeInMilliseconds / 1000);
-        const seconds = timeInSeconds % 60;
-        const minutes = Math.floor(timeInSeconds / 60);
-        let text = null;
-        if (seconds < 10) {
-            text = minutes + ':0' + seconds;
-        } else {
-            text = minutes + ':' + seconds;
-        }
-        return text;
-    }
-
-    drawTimer () {
-        const time = new Date() - this.game.startTime;
-        const text = this.prettyDuration(time);
-        this.domTimer.innerHTML = text;
-    }
-
-    drawHighScore () {
-        const text = this.prettyDuration(this.game.highScore);
-        this.domHighScore.innerHTML = text;
-        this.domHighScoreContainer.style.display = 'inline';
+        this.updateBuildings();
     }
 
     selectTab(tabButton, tab) {
@@ -369,10 +289,6 @@ class GameRenderer {
 
     selectActivesTab() {
         this.selectTab(this.domActivesTabButton, this.domActivesTab);
-    }
-
-    closeHeroDetails() {
-        this.domHeroDetails.style.display = 'none';
     }
 
     removeChildren (domElement) {

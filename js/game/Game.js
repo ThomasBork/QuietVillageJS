@@ -13,40 +13,6 @@ class Game {
         this.updateFrequency = 50;
         this.lastUpdate = new Date();
     }
-    
-    addHero (hero) {
-        this.player.addHero(hero);
-        this.renderer.addHero(hero);
-    }
-
-    buyHero () {
-        if (this.player.gold >= this.player.nextHeroCost) {
-            this.player.gold -= this.player.nextHeroCost;
-            const hero = new Hero();
-            this.addHero(hero);
-        }
-    }
-
-    buyItem (item) {
-        if (item.bought && !item.enabled) {
-            item.enable();
-            this.renderer.enableItem(item);
-        } else if (!item.bought && this.player.gold >= item.cost) {
-            this.player.gold -= item.cost;
-            item.buy();
-            item.enable();
-            this.renderer.buyItem(item);
-            this.renderer.enableItem(item);
-        }
-    }
-
-    buyBuilding (building) {
-        if (!building.bought) {
-            //this.player.gold -= building.cost;
-            building.buy();
-            this.renderer.buyBuilding(building);
-        }
-    }
 
     buyPassive (passive) {
         if (!passive.bought && this.player.gold >= passive.cost) {
@@ -54,22 +20,6 @@ class Game {
             passive.buy();
             this.renderer.buyPassive(passive);
         }
-    }
-
-    setHeroDamageToCollectionRatio(hero, ratio) {
-        const granularity = 1 / (this.player.damageToCollectionRatioSliderGranularity - 1);
-        hero.damageToCollectionRatio = Math.round(ratio / granularity) * granularity;
-        this.renderer.updateHero(hero);
-    }
-
-    dealDamage () {
-        this.player.heroes.forEach(hero => {
-            const damage = hero.damage * this.updateFrequency / 1000;
-            this.gold += damage;
-        });
-    }
-
-    updateCollection () {
     }
 
     innerUpdate (dTime) {
