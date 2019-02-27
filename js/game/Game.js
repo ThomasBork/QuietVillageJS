@@ -1,30 +1,38 @@
 class Game {
     constructor () {
-        this.renderer = new GameRenderer(this);
-
         this.player = new Player(this);
-        this.player.enableResource (RESOURCE_TYPE.FOOD);
-        this.player.enableResource (RESOURCE_TYPE.WOOD);    
-        this.player.enableJob('Woodcutter');
-        this.player.enableJob('Gatherer');
 
         this.startTime = null;
         this.interval = null;
         this.updateFrequency = 50;
         this.lastUpdate = new Date();
+
+        this.onStart = new Observable();
+        this.onUpdate = new Observable();
+        this.onWin = new Observable();
+        this.onStop = new Observable();
     }
 
-    buyPassive (passive) {
-        if (!passive.bought && this.player.gold >= passive.cost) {
-            this.player.gold -= passive.cost;
-            passive.buy();
-            this.renderer.buyPassive(passive);
-        }
+    prepareNewGame () {
+        this.player.enableResource (RESOURCE_TYPE.FOOD);
+        this.player.enableResource (RESOURCE_TYPE.WOOD);    
+        this.player.enableJob('Woodcutter');
+        this.player.enableJob('Gatherer');
+        this.player.enableBuilding('Hut');
+        this.player.enableBuilding('Barn');
+
+        this.player.resources[RESOURCE_TYPE.WOOD].amount = 20;
+        this.player.workerCount = 0;
     }
 
-    innerUpdate (dTime) {
-        this.player.handleResourceIncome(dTime);
-        this.player.capResources();
+    start () {
+        this.startTime = new Date();
+        this.player.recalculateResourceCaps();
+        this.onStart.notify();
+
+        this.interval = setInterval(() => {
+            this.update();
+        }, this.updateFrequency);
     }
 
     update () {
@@ -33,21 +41,9 @@ class Game {
             timeSinceLastUpdate -= this.updateFrequency;
             this.lastUpdate.setTime(this.lastUpdate.getTime() + this.updateFrequency);
 
-            this.innerUpdate(this.updateFrequency);
+            this.player.update(this.updateFrequency);
         }
-
-        this.renderer.updateResources();
-        this.renderer.drawTimer();
-    }
-
-    start () {
-        this.startTime = new Date();
-        this.player.recalculateResourceCaps();
-        this.renderer.startGame();
-
-        this.interval = setInterval(() => {
-            this.update();
-        }, this.updateFrequency);
+        this.onUpdate.notify();
     }
 
     win() {
@@ -55,12 +51,12 @@ class Game {
         if (!this.highScore || this.highScore > score) {
             this.highScore = score;
         }
-        this.renderer.drawHighScore();
+        this.onWin.notify();
         this.stop();
     }
 
     stop () {
         clearInterval(this.interval);
-        this.renderer.unload();
+        this.onStop.notify();
     }
 }

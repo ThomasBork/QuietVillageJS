@@ -3,7 +3,6 @@ class Player {
         this.game = game;
         this.highScore = null;
         this.buildings = [];
-        this.heroes = [];
         this.passives = [];
         this.actives = [];
         this.jobs = [];
@@ -16,15 +15,12 @@ class Player {
         Data.initResources(this);
         Data.initJobs(this);
 
-        this.resources[RESOURCE_TYPE.WOOD].amount = 20;
-    }
-
-    get nextHeroCost () {
-        const baseCost = 100;
-        const scalingFactor = 100;
-        const scalingExponent = 2;
-        const scalingCost = scalingFactor * Math.pow(scalingExponent, this.heroes.length); 
-        return baseCost + scalingCost;
+        this.onBuyBuilding = new Observable();
+        this.onEnableResource = new Observable();
+        this.onEnableJob = new Observable();
+        this.onWorkersAdded = new Observable();
+        this.onJobWorkerCountUpdated = new Observable();
+        this.onBuildingEnabled = new Observable ();
     }
 
     get income () {
@@ -71,31 +67,39 @@ class Player {
         }
     }
 
+    enableBuilding (buildingName) {
+        const building = this.buildings.find(building => building.name === buildingName);
+        if (!building.enabled) {
+            building.enable();
+            this.onBuildingEnabled.notify(building);
+        }
+    }
+
     buyBuilding (building) {
         const cost = building.costOfNext;
         if (this.tryPayingResources(cost)) {
             building.buy();
             this.recalculateResourceCaps();
-            this.game.renderer.onBuyBuilding(building);
+            this.onBuyBuilding.notify(building);
         }
     }
 
     enableResource(resourceType) {
         const resource = this.resources[resourceType];
         resource.enabled = true;
-        this.game.renderer.onResourceEnabled (resource);
+        this.onEnableResource.notify(resource);
     }
 
     enableJob(jobName) {
         const job = this.jobs.find(job => job.name === jobName);
         job.enabled = true;
-        this.game.renderer.onJobEnabled(job);
+        this.onEnableJob.notify(job);
     }
 
     addWorkers (amount) {
         this.workerCount += amount;
         this.idleJob.workerCount += amount;
-        this.game.renderer.updateJobs();
+        this.onWorkersAdded.notify(amount);
     }
 
     setAmountOfWorkersOnJob (job, workerCount) {
@@ -103,12 +107,7 @@ class Player {
         difference = Math.min(difference, this.idleJob.workerCount);
         job.workerCount += difference;
         this.idleJob.workerCount -= difference;
-        this.game.renderer.updateJobs();
-    }
-
-    addHero (hero) {
-        hero.player = this;
-        this.heroes.push(hero);
+        this.onJobWorkerCountUpdated.notify(job, workerCount);
     }
 
     getBuilding (name) {
@@ -139,5 +138,10 @@ class Player {
         Object.values(this.resources).forEach(resource => {
             resource.discardAboveCap();
         });
+    }
+
+    update (dTime) {
+        this.handleResourceIncome(dTime);
+        this.capResources();
     }
 }
