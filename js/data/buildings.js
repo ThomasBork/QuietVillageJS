@@ -1,24 +1,21 @@
 Data.initBuildings = (player) => {
-    player.buildings.push(new Building(
-        'Hut',
-        'Allows another worker to join the village',
-        {'Wood': 10},
-        () => {
-            player.addWorkers(1);
-        }
-    ));
-    player.buildings.push(new Building(
-        'Barn',
-        'Increases supply',
-        {'Wood': 10},
-        () => {}
-    ));
-    player.buildings.push(new Building(
-        'Time Machine',
-        'You win the game',
-        {'Gold': 100000},
-        () => {
-            player.game.win();
-        }
-    ));
+    Data.buildings = {
+        hut: new Building({
+            name: 'Hut',
+            description: 'Allows another worker to join the village',
+            cost: {'Wood': 10},
+            buyFunction: () => {
+                player.addWorkers(1);
+            }
+        }),
+        woodShed: new Building({
+            name: 'Wood Shed',
+            description: 'Can store more wood',
+            cost: {'Wood': 200},
+            costAmountPowerBase: 1,
+            costAmountMultiplier: 80
+        })
+    }
+
+    player.buildings = Object.values(Data.buildings);
 }

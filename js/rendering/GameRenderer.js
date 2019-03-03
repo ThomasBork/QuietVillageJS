@@ -1,5 +1,6 @@
 class GameRenderer {
-    constructor (game) {
+    constructor (name, game) {
+        this.name = name;
         this.game = game;
 
         this.domElementsToRemoveAtCleanUp = [];
@@ -73,5 +74,14 @@ class GameRenderer {
             }
         });
         this.domElementsToRemoveAtCleanUp = [];
+    }
+
+
+    getObjectToSave() {
+        return {};
+    }
+
+    loadStateFromObject(obj) {
+
     }
 }

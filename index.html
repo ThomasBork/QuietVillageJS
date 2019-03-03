@@ -21,27 +21,27 @@
   <div id="game">
     <ul id="tabs">
       <li>
-        <div id="buildings-tab-button" class="tab-button">
-          <img src="img/buildings-tab.png"/>
-          <span class="tab-text">Buildings</span>
-        </div>
-      </li>
-      <li>
         <div id="workers-tab-button" class="tab-button">
           <img src="img/workers-tab.png"/>
           <span class="tab-text">Workers</span>
         </div>
       </li>
       <li>
-        <div id="heroes-tab-button" class="tab-button">
-          <img src="img/heroes-tab.png"/>
-          <span class="tab-text">Heroes</span>
+        <div id="buildings-tab-button" class="tab-button">
+          <img src="img/buildings-tab.png"/>
+          <span class="tab-text">Buildings</span>
         </div>
       </li>
       <li>
-        <div id="passives-tab-button" class="tab-button">
-          <img src="img/passives-tab.png"/>
-          <span class="tab-text">Passives</span>
+        <div id="upgrades-tab-button" class="tab-button">
+          <img src="img/upgrades-tab.png"/>
+          <span class="tab-text">Upgrades</span>
+        </div>
+      </li>
+      <li>
+        <div id="culture-tab-button" class="tab-button">
+          <img src="img/culture-tab.png"/>
+          <span class="tab-text">Culture</span>
         </div>
       </li>
       <li>
@@ -62,31 +62,19 @@
         </ul>
       </div>
     </div>
-
-    <div id="heroes-tab" class="tab">
-      <ul id="heroes-container">
-        <ul id="heroes">
-        </ul>
-        <div id="new-hero-button" class="button">
-          <span>Buy hero (</span>
-          <span id="new-hero-cost">0</span>
-          <span>gold )</span>
-        </div>
-      </ul>
-      <div id="hero-details">
-        <span class="close-button icon-button">Close</span>
-        <ul id="items">
-        </ul>
-      </div>
-    </div>
   
     <div id="buildings-tab" class="tab">
       <ul id="buildings">
       </ul>
     </div>
   
-    <div id="passives-tab" class="tab">
-      <ul id="passives">
+    <div id="upgrades-tab" class="tab">
+      <ul id="upgrades">
+      </ul>
+    </div>
+  
+    <div id="culture-tab" class="tab">
+      <ul id="cultures">
       </ul>
     </div>
   
@@ -104,10 +92,14 @@
       </li>
 
       <li class="job-line label-value-line">
-        <span class="name"></span>
+        <span class="name-container">
+          <span class="name"></span>
+          <span class="amount-container">
+            (<span class="amount"></span>)
+          </span>
+        </span>
         <span class="range-container">
           <input type="range" class="amount-range" min="0" max="100" value="0">
-          <span class="amount"></span>
         </span>
       </li>
 
@@ -127,43 +119,14 @@
         </div>
       </li>
 
-      <li class="hero">
-        <span class="view-details-button icon-button">View</span>
-        <ul>
-          <li>
-            <span class="label">Level:</span>
-            <span class="level">0</span>
-          </li>
-          <li>
-            <span class="label">Damage:</span>
-            <span class="total-damage">0</span>
-          </li>
-          <li>
-            <span class="label">Collection:</span>
-            <span class="total-collection">0</span>
-          </li>
-          <li>
-            <span class="label">Collect</span>
-            <input type="range" min="0" max="100" value="100" class="damageToCollectionRatio">
-            <span class="label">Damage</span>
-          </li>
-        </ul>
-      </li>
-
-      <li class="item">
+      <li class="upgrade">
         <div class="header">
           <span class="name"></span>
-          <span class="cost"></span>
         </div>
         <span class="description"></span>
-      </li>
-
-      <li class="passive-skill">
-        <div class="header">
-          <span class="name"></span>
-          <span class="cost"></span>
+        <div class="hover-info">
+          <ul class="cost-list"></ul>
         </div>
-        <span class="description"></span>
       </li>
     </div>
   </div>
@@ -171,32 +134,40 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-  <script src='js/utils/extensions.js'></script>
+  <script src='js/shared/extensions.js'></script>
+  <script src='js/shared/utils.js'></script>
+  <script src='js/shared/Observable.js'></script>
   <script src='js/enums/enums.js'></script>
 
   <script src='js/data/Data.js'></script>
   <script src='js/data/buildings.js'></script>
+  <script src='js/data/effects.js'></script>
   <script src='js/data/jobs.js'></script>
-  <script src='js/data/passives.js'></script>
   <script src='js/data/resources.js'></script>
+  <script src='js/data/prerequisites.js'></script>
+  <script src='js/data/upgrades.js'></script>
 
-  <script src='js/game/Observable.js'></script>
+  <script src='js/game/GameObject.js'></script>
   <script src='js/game/Building.js'></script>
   <script src='js/game/Game.js'></script>
-  <script src='js/game/Hero.js'></script>
-  <script src='js/game/Item.js'></script>
   <script src='js/game/Job.js'></script>
-  <script src='js/game/PassiveSkill.js'></script>
+  <script src='js/game/JobEfficiencyEffect.js'></script>
   <script src='js/game/Player.js'></script>
   <script src='js/game/Resource.js'></script>
+  <script src='js/game/Upgrade.js'></script>
+
+  <script src='js/persistence/SaveGame.js'></script>
 
   <script src='js/rendering/GameRenderer.js'></script>
   <script src='js/rendering/BuildingsRenderer.js'></script>
   <script src='js/rendering/HUDRenderer.js'></script>
   <script src='js/rendering/ResourceRenderer.js'></script>
-  <script src='js/rendering/WorkersRenderer.js'></script>
+  <script src='js/rendering/UITab.js'></script>
   <script src='js/rendering/UIElement.js'></script>
+  <script src='js/rendering/UpgradesRenderer.js'></script>
+  <script src='js/rendering/WorkersRenderer.js'></script>
 
+  <script src='js/GameManager.js'></script>
   <script src='js/init.js'></script>
 
 </body>

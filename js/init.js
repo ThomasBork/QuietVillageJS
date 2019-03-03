@@ -1,17 +1,20 @@
 function newGame() {
-    if(game) {
-        game.stop();
-    }
-    game = new Game();
-    game.prepareNewGame();
-    gameRenderers = [
-        new HUDRenderer(game),
-        new ResourceRenderer(game),
-        new BuildingsRenderer(game),
-        new WorkersRenderer(game)
-    ];
-    game.start();
+    gameManager.newGame();
 }
 
-let game;
-let gameRenderers = [];
+function loadGame () {
+    gameManager.loadGame();
+}
+
+function saveGame () {
+    gameManager.saveGame();
+}
+
+function init () {
+    gameManager = new GameManager();
+    gameManager.init();
+}
+
+let gameManager;
+
+init ();

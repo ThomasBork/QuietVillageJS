@@ -1,6 +1,6 @@
 class HUDRenderer extends GameRenderer {
     constructor (game) {
-        super(game);
+        super("HUDRenderer", game);
         this.game = game;
 
         this.domGameContainer = document.getElementById('game');
@@ -9,39 +9,46 @@ class HUDRenderer extends GameRenderer {
         this.domHighScoreContainer = document.getElementById('high-score-container');
 
         // Tabs
-        this.domBuildingsTabButton = document.getElementById('buildings-tab-button');
-        this.domWorkersTabButton = document.getElementById('workers-tab-button');
-        this.domHeroesTabButton = document.getElementById('heroes-tab-button');
-        this.domPassivesTabButton = document.getElementById('passives-tab-button');
-        this.domActivesTabButton = document.getElementById('actives-tab-button');
-        this.domTabButtons = [this.domWorkersTabButton, this.domBuildingsTabButton, this.domHeroesTabButton, this.domPassivesTabButton, this.domActivesTabButton];
+        this.workersTab = new UITab ('Workers', document.getElementById('workers-tab'), document.getElementById('workers-tab-button'));
+        this.buildingsTab = new UITab ('Buildings', document.getElementById('buildings-tab'), document.getElementById('buildings-tab-button'));
+        this.cultureTab = new UITab ('Culture', document.getElementById('culture-tab'), document.getElementById('culture-tab-button'));
+        this.upgradesTab = new UITab ('Upgrades', document.getElementById('upgrades-tab'), document.getElementById('upgrades-tab-button'));
+        this.activesTab = new UITab ('Actives', document.getElementById('actives-tab'), document.getElementById('actives-tab-button'));
 
-        this.domBuildingsTab = document.getElementById('buildings-tab');
-        this.domWorkersTab = document.getElementById('workers-tab');
-        this.domHeroesTab = document.getElementById('heroes-tab');
-        this.domPassivesTab = document.getElementById('passives-tab');
-        this.domActivesTab = document.getElementById('actives-tab');
-        this.domTabs = [this.domWorkersTab, this.domBuildingsTab, this.domHeroesTab, this.domPassivesTab, this.domActivesTab];
+        this.tabs = [
+            this.workersTab,
+            this.buildingsTab,
+            this.cultureTab,
+            this.upgradesTab,
+            this.activesTab
+        ];
 
         this.setUpEventListeners();
-        this.setUpDomTabButtonEvents();
-        this.updateEnabledTabs();
+        this.setUpDomEvents();
         
-        this.selectBuildingsTab();
+        this.selectTab(this.workersTab);
     }
 
     setUpEventListeners() {
         this.game.onStart.addSubscription(this.onStartGame, this);
         this.game.onUpdate.addSubscription(this.onUpdateGame, this);
         this.game.onWin.addSubscription(this.onWinGame, this);
+
+        Data.jobs.woodcutter.onChangeWorkerCount.addSubscription(amount => {
+            if (amount > 0) {
+                this.buildingsTab.enable();
+            }
+        });
+
+        Data.buildings.hut.onBuy.addSubscription(amount => {
+            if (amount >= 3) {
+                this.upgradesTab.enable();
+            }
+        });
     }
 
-    setUpDomTabButtonEvents () {
-        this.domBuildingsTabButton.addEventListener('click', () => this.selectBuildingsTab());
-        this.domWorkersTabButton.addEventListener('click', () => this.selectWorkersTab());
-        this.domHeroesTabButton.addEventListener('click', () => this.selectHeroesTab());
-        this.domPassivesTabButton.addEventListener('click', () => this.selectPassivesTab());
-        this.domActivesTabButton.addEventListener('click', () => this.selectActivesTab());
+    setUpDomEvents() {
+        this.tabs.forEach(tab => tab.domButton.addEventListener('click', () => this.selectTab(tab)));
     }
 
     onStartGame () {
@@ -52,7 +59,6 @@ class HUDRenderer extends GameRenderer {
 
     onUpdateGame () {
         this.drawTimer();
-        this.updateEnabledTabs();
     }
 
     onWinGame () {
@@ -71,48 +77,12 @@ class HUDRenderer extends GameRenderer {
         this.domHighScoreContainer.style.display = 'inline';
     }
 
-    updateEnabledTabs() {
-        this.domTabButtons.forEach(t => t.classList.remove('enabled'));
-
-        if (this.game.player.buildings.some(b => b.enabled)) {
-            this.enableTabButton(this.domBuildingsTabButton);
+    selectTab(tab) {
+        if (!tab.enabled) {
+            tab.enable();
         }
-
-        if (this.game.player.workerCount > 0) {
-            this.enableTabButton(this.domWorkersTabButton);
-        }
-    }
-
-    enableTabButton(tabButton) {
-        tabButton.classList.add('enabled');
-    }
-
-    selectTab(tabButton, tab) {
-        this.domTabButtons.forEach(t => t.classList.remove('selected'));
-        tabButton.classList.add('selected');
-
-        this.domTabs.forEach(t => t.classList.remove('selected'));
-        tab.classList.add('selected');
-    }
-
-    selectWorkersTab() {
-        this.selectTab(this.domWorkersTabButton, this.domWorkersTab);
-    }
-
-    selectBuildingsTab() {
-        this.selectTab(this.domBuildingsTabButton, this.domBuildingsTab);
-    }
-
-    selectHeroesTab() {
-        this.selectTab(this.domHeroesTabButton, this.domHeroesTab);
-    }
-
-    selectPassivesTab() {
-        this.selectTab(this.domPassivesTabButton, this.domPassivesTab);
-    }
-
-    selectActivesTab() {
-        this.selectTab(this.domActivesTabButton, this.domActivesTab);
+        this.tabs.forEach(t => t.deselect());
+        tab.select();
     }
 
     resetHoverInfoHoverFuntions() {
@@ -133,5 +103,23 @@ class HUDRenderer extends GameRenderer {
         this.domTimer.innerHTML = '';
 
         this.domGameContainer.style.display = 'none';
+
+        this.tabs.forEach(tab => tab.disable());
+    }
+
+
+    getObjectToSave() {
+        return {
+            tabs: this.tabs.map(tab => tab.getObjectToSave())
+        };
+    }
+
+    loadStateFromObject (object) {
+        object.tabs.forEach(tabObj => {
+            if (tabObj.enabled) {
+                const tab = this.tabs.find(tab => tab.name === tabObj.name);
+                tab.enable();
+            }
+        });
     }
 }

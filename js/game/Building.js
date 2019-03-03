@@ -1,19 +1,31 @@
-class Building {
-    constructor (name, description, cost, buyFunction) {
-        this.name = name;
-        this.description = description;
-        this.cost = cost;
-        this.buyFunction = buyFunction;
-        this.enabled = false;
+class Building extends GameObject {
+    constructor (options) {
+        super(options);
+        var defaults = {
+            name: "No name",
+            description: "",
+            cost: {},
+            buyFunction: null,
+            costAmountPowerBase: 1.5,
+            costAmountMultiplier: 0
+        };
+        
+        const settings = Utils.extend( defaults, options );
+        Object.keys(settings).forEach(key => this[key] = settings[key]);
+
         this.amount = 0;
-        this.powerBase = 1.5;
+
+        this.onEnable = new Observable();
+        this.onBuy = new Observable();
     }
 
     get costOfNext () {
         const nextCost = {};
         Object.keys(this.cost)
             .forEach(resourceType => 
-                nextCost[resourceType] = this.cost[resourceType] * Math.pow(this.powerBase, this.amount)
+                nextCost[resourceType] = 
+                    this.cost[resourceType] * Math.pow(this.costAmountPowerBase, this.amount)
+                    + this.costAmountMultiplier * this.amount
             );
         return nextCost;
     }
@@ -23,11 +35,25 @@ class Building {
     }
 
     enable () {
-        this.enabled = true;
+        if (!this.enabled) {
+            this.enabled = true;
+            this.onEnable.notify();
+        }
     }
 
     buy () {
         this.amount++;
-        this.buyFunction();
+        if (this.buyFunction) {
+            this.buyFunction();
+        }
+        this.onBuy.notify(this.amount);
+    }
+
+    getObjectToSave () {
+        return {
+            name: this.name,
+            amount: this.amount,
+            enabled: this.enabled
+        };
     }
 }

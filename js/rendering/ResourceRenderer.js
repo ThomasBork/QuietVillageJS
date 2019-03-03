@@ -1,6 +1,6 @@
 class ResourceRenderer extends GameRenderer {
     constructor (game) {
-        super(game);
+        super("ResourceRenderer", game);
         this.game = game;
 
         this.resources = [];
@@ -49,10 +49,7 @@ class ResourceRenderer extends GameRenderer {
     updateResources() {
         this.resources.forEach(resource => {
             const valueElement = resource.domElement.querySelector('.value');
-            let text = this.prettyNumber(resource.gameElement.amount, 0) + ' / ' + this.prettyNumber(resource.gameElement.cap, 0);
-            if (resource.gameElement.income !== 0) {
-                text += ' (' + this.prettyNumber(resource.gameElement.income) + ')';
-            }
+            const text = this.prettyNumber(resource.gameElement.amount, 0) + ' / ' + this.prettyNumber(resource.gameElement.cap, 0);
             valueElement.innerHTML = text;
         });
     }

@@ -1,5 +1,11 @@
 Data.initResources = (player) => {
-    player.resources[RESOURCE_TYPE.FOOD] = new Resource(RESOURCE_TYPE.FOOD);
-    player.resources[RESOURCE_TYPE.WOOD] = new Resource(RESOURCE_TYPE.WOOD);
-    player.resources[RESOURCE_TYPE.GOLD] = new Resource(RESOURCE_TYPE.GOLD);
+    Data.resources = {
+        food: new Resource(RESOURCE_TYPE.FOOD),
+        gold: new Resource(RESOURCE_TYPE.GOLD),
+        pelt: new Resource(RESOURCE_TYPE.PELT),
+        wood: new Resource(RESOURCE_TYPE.WOOD)
+    }
+
+    Object.values(Data.resources).forEach(resource => 
+        player.resources[resource.type] = resource);
 }

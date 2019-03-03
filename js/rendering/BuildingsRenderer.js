@@ -1,6 +1,6 @@
 class BuildingsRenderer extends GameRenderer {
     constructor (game) {
-        super(game);
+        super("BuildingsRenderer", game);
         this.game = game;
 
         this.buildings = [];
@@ -16,6 +16,7 @@ class BuildingsRenderer extends GameRenderer {
         this.game.onUpdate.addSubscription(this.onUpdateGame, this);
 
         this.game.player.onBuyBuilding.addSubscription(this.onBuyBuilding, this);
+        this.game.player.onEnableBuilding.addSubscription(this.redrawBuildings, this);
     }
 
     onUpdateGame () {
@@ -24,8 +25,6 @@ class BuildingsRenderer extends GameRenderer {
 
     onBuyBuilding(building) {
         const uibuilding = this.buildings.find(p => p.gameElement === building);
-
-        uibuilding.domElement.classList.add('bought');
 
         this.updateBuildings();
     }
@@ -55,6 +54,7 @@ class BuildingsRenderer extends GameRenderer {
         this.buildings.forEach(building => {
             if (building.gameElement.amount > 0) {
                 building.domElement.querySelector('.amount').innerHTML = building.gameElement.amount;
+                building.domElement.classList.add('bought');
             }
             const costLine = building.domElement.querySelector('.cost-list');
             this.removeChildren(costLine);
@@ -65,7 +65,7 @@ class BuildingsRenderer extends GameRenderer {
                 newResourceLine.querySelector('.value').innerHTML = this.prettyNumber(building.gameElement.costOfNext[resourceType], 0, 0, true);
             })
         });
-        
+
         this.showAffordableBuildings();
     }
 

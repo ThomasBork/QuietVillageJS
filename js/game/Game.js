@@ -1,10 +1,8 @@
 class Game {
     constructor () {
-        this.player = new Player(this);
-
-        this.startTime = null;
+        this.startTime = new Date();
         this.interval = null;
-        this.updateFrequency = 50;
+        this.updateFrequency = 100;
         this.lastUpdate = new Date();
 
         this.onStart = new Observable();
@@ -14,25 +12,27 @@ class Game {
     }
 
     prepareNewGame () {
-        this.player.enableResource (RESOURCE_TYPE.FOOD);
+        this.player = new Player(this);
         this.player.enableResource (RESOURCE_TYPE.WOOD);    
         this.player.enableJob('Woodcutter');
-        this.player.enableJob('Gatherer');
-        this.player.enableBuilding('Hut');
-        this.player.enableBuilding('Barn');
+        this.player.enableBuilding(Data.buildings.hut);
 
-        this.player.resources[RESOURCE_TYPE.WOOD].amount = 20;
-        this.player.workerCount = 0;
+        this.player.resources[RESOURCE_TYPE.WOOD].amount = 200;
+        this.player.addWorkers(1);
     }
 
     start () {
-        this.startTime = new Date();
         this.player.recalculateResourceCaps();
         this.onStart.notify();
 
         this.interval = setInterval(() => {
             this.update();
         }, this.updateFrequency);
+    }
+
+    resume () {
+        this.player.recalculateResourceCaps();
+        this.update();
     }
 
     update () {
@@ -47,10 +47,6 @@ class Game {
     }
 
     win() {
-        const score = new Date() - this.startTime;
-        if (!this.highScore || this.highScore > score) {
-            this.highScore = score;
-        }
         this.onWin.notify();
         this.stop();
     }
@@ -58,5 +54,21 @@ class Game {
     stop () {
         clearInterval(this.interval);
         this.onStop.notify();
+    }
+
+    getObjectToSave () {
+        return {
+            startTime: this.startTime,
+            lastUpdate: this.lastUpdate,
+            player: this.player.getObjectToSave()
+        };
+    }
+
+    static loadFromObject(obj) {
+        const game = new Game ();
+        game.startTime = new Date(obj.startTime);
+        game.lastUpdate = new Date(obj.lastUpdate);
+        game.player = Player.loadFromObject(obj.player);
+        return game;
     }
 }

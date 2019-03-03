@@ -1,6 +1,6 @@
 class WorkersRenderer extends GameRenderer {
     constructor (game) {
-        super(game);
+        super("WorkersRenderer", game);
         this.game = game;
 
         this.jobs = [];
@@ -29,14 +29,16 @@ class WorkersRenderer extends GameRenderer {
         this.jobs = [];
         this.game.player.jobs.forEach(job => {
             if (job !== this.game.player.idleJob) {
-                const newDomElement = this.cloneTemplate('.job-line');
-                this.domJobList.appendChild(newDomElement);
-                const uiElement = new UIElement(job, newDomElement);
-                this.jobs.push(uiElement);
-
-                const rangeElement = newDomElement.querySelector('.amount-range');
-                rangeElement.addEventListener('input', () => this.game.player.setAmountOfWorkersOnJob(job, rangeElement.value));
-                rangeElement.addEventListener('change', () => this.game.player.setAmountOfWorkersOnJob(job, rangeElement.value));
+                if (job.enabled) {
+                    const newDomElement = this.cloneTemplate('.job-line');
+                    this.domJobList.appendChild(newDomElement);
+                    const uiElement = new UIElement(job, newDomElement);
+                    this.jobs.push(uiElement);
+    
+                    const rangeElement = newDomElement.querySelector('.amount-range');
+                    rangeElement.addEventListener('input', () => this.game.player.setAmountOfWorkersOnJob(job, rangeElement.value));
+                    rangeElement.addEventListener('change', () => this.game.player.setAmountOfWorkersOnJob(job, rangeElement.value));
+                }
             }
         });
 
