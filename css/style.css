@@ -1,5 +1,4 @@
 /* Global */
-
 body {
     background-color: #141414;
     color: #f2f2f2;
@@ -49,8 +48,18 @@ ul {
     display: flex;
 }
 
-/* Header */
+.progress-bar-container {
+    height: 20px;
+    background-color: black;
+}
 
+.progress-bar {
+    height: 100%;
+    background-color: #9090F0;
+    display: block;
+}
+
+/* Header */
 #header {
     width: 100%;
     height: 50px;
@@ -74,7 +83,6 @@ ul {
 }
 
 /* Game */
-
 #game {
     display: none;
     justify-content: space-between;
@@ -96,7 +104,6 @@ ul {
 }
 
 /* Tabs */
-
 .tab-button {
     padding: 5px;
     background-color: #303030;
@@ -151,101 +158,15 @@ ul {
     vertical-align: middle;
 }
 
-/* Heroes */
-
-#heroes-container {
-    height: 100%;
+/* Tile object lists */
+.tile-object-list {
     overflow-y: auto;
-}
-
-#heroes {
-    width: 100%;
-    margin-top: 5px;
-}
-
-.hero {
-    position: relative;
-    background-color: #303030;
-    padding: 5px;
-    margin-bottom: 10px;
-}
-
-.hero.selected {
-    background-color: #a03030;
-}
-
-.hero > ul > li {
-    margin-bottom: 5px;
-}
-
-.hero .view-details-button {
-    background-color: #141414;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    padding: 5px;
-}
-
-/* Hero Details */
-
-#hero-details {
-    position: relative;
-    display: none;
-    background-color: #303030;
-    margin: 5px;
-    padding: 5px;
-    flex: 1 0 0;
-}
-
-#hero-details .close-button {
-    background-color: #141414;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    padding: 5px;
-}
-
-#items {
-    overflow-y: auto;
+    margin-right: -500px;
+    padding-right: 500px;
     height: 100%;
 }
 
-.item {
-    width: 400px;
-    height: 100px;
-    position: relative;
-    background-color: #141414;
-    padding: 5px;
-    margin-bottom: 5px;
-}
-
-.item.enabled.bought {
-    background-color: #039030;
-}
-
-.item.bought {
-    background-color: #036030;
-}
-
-.item .header {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.item .header {
-    display: flex;
-    justify-content: space-between;
-}
-
-/* Buildings */
-
-
-.buildings {
-    overflow-y: auto;
-    height: 100%;
-}
-
-.building {
+.tile-object-line {
     width: 400px;
     height: 100px;
     position: relative;
@@ -253,59 +174,41 @@ ul {
     padding: 5px;
     margin-top: 5px;
     cursor: pointer;
+}
+
+.tile-object-line,
+.tile-object-line.affordable.bought {
     border: 1px solid #303030;
 }
 
-.building.affordable {
+.tile-object-line.affordable {
     border: 1px solid #e0e0e0;
 }
 
-.building.bought {
+.tile-object-line.bought,
+.tile-object-line.completed {
     background-color: #036030;
 }
 
-.building .header {
+.tile-object-line .header {
     font-size: 20px;
     margin-bottom: 10px;
-}
-
-.building .header {
     display: flex;
     justify-content: space-between;
 }
 
-/* Passives */
-
-#passives-tab {
-    margin-top: 5px;
+/* Buildings */
+#buildings .tile-object-line.affordable.bought {
+    border: 1px solid #e0e0e0;
 }
 
-#passives {
-    overflow-y: auto;
-    height: 100%;
-} 
-
-.passive-skill {
-    width: 400px;
-    height: 100px;
-    position: relative;
-    background-color: #303030;
-    padding: 5px;
-    margin-bottom: 5px;
+/* Research */
+.research .progress-bar-container {
+    width: 200px;
 }
 
-.passive-skill.bought {
-    background-color: #036030;
-}
-
-.passive-skill .header {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.passive-skill .header {
-    display: flex;
-    justify-content: space-between;
+#researches .research.started {
+    border: 1px solid #e0e0e0;
 }
 
 /* Resources */

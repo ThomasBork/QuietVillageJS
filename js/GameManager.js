@@ -56,6 +56,7 @@ class GameManager {
         this.gameRenderers = [
             new HUDRenderer(this.game),
             new BuildingsRenderer(this.game),
+            new ResearchRenderer(this.game),
             new ResourceRenderer(this.game),
             new UpgradesRenderer(this.game),
             new WorkersRenderer(this.game)

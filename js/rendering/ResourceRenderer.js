@@ -1,7 +1,6 @@
 class ResourceRenderer extends GameRenderer {
     constructor (game) {
         super("ResourceRenderer", game);
-        this.game = game;
 
         this.resources = [];
 

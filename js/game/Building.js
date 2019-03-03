@@ -15,7 +15,6 @@ class Building extends GameObject {
 
         this.amount = 0;
 
-        this.onEnable = new Observable();
         this.onBuy = new Observable();
     }
 
@@ -32,13 +31,6 @@ class Building extends GameObject {
 
     getCostOfNext(){
         return this.cost;
-    }
-
-    enable () {
-        if (!this.enabled) {
-            this.enabled = true;
-            this.onEnable.notify();
-        }
     }
 
     buy () {

@@ -4,5 +4,5 @@ Data.initEffects = () => {
     // Jobs
 
     // Upgrades
-    Data.upgrades.woodenAxe.effects = [new JobEfficiencyEffect(Data.jobs.woodcutter, 0.2, true)];
+    Data.upgrades.woodenAxe.effects = [new JobEfficiencyEffect(Data.jobs.woodcutter, 1.2, true)];
 };

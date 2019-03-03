@@ -39,6 +39,12 @@
         </div>
       </li>
       <li>
+        <div id="research-tab-button" class="tab-button">
+          <img src="img/research-tab.png"/>
+          <span class="tab-text">Research</span>
+        </div>
+      </li>
+      <li>
         <div id="culture-tab-button" class="tab-button">
           <img src="img/culture-tab.png"/>
           <span class="tab-text">Culture</span>
@@ -64,12 +70,17 @@
     </div>
   
     <div id="buildings-tab" class="tab">
-      <ul id="buildings">
+      <ul id="buildings" class="tile-object-list">
       </ul>
     </div>
   
     <div id="upgrades-tab" class="tab">
-      <ul id="upgrades">
+      <ul id="upgrades" class="tile-object-list">
+      </ul>
+    </div>
+  
+    <div id="research-tab" class="tab">
+      <ul id="researches" class="tile-object-list">
       </ul>
     </div>
   
@@ -108,7 +119,7 @@
         <span class='value'></span>
       </li>
 
-      <li class="building">
+      <li class="building tile-object-line">
         <div class="header">
           <span class="name"></span>
           <span class="amount"></span>
@@ -119,7 +130,7 @@
         </div>
       </li>
 
-      <li class="upgrade">
+      <li class="upgrade tile-object-line">
         <div class="header">
           <span class="name"></span>
         </div>
@@ -127,6 +138,16 @@
         <div class="hover-info">
           <ul class="cost-list"></ul>
         </div>
+      </li>
+
+      <li class="research tile-object-line">
+        <div class="header">
+          <span class="name"></span>
+          <span class="progress-bar-container">
+            <span class="progress-bar">
+          </span>
+        </div>
+        <span class="description"></span>
       </li>
     </div>
   </div>
@@ -143,6 +164,7 @@
   <script src='js/data/buildings.js'></script>
   <script src='js/data/effects.js'></script>
   <script src='js/data/jobs.js'></script>
+  <script src='js/data/researches.js'></script>
   <script src='js/data/resources.js'></script>
   <script src='js/data/prerequisites.js'></script>
   <script src='js/data/upgrades.js'></script>
@@ -153,6 +175,7 @@
   <script src='js/game/Job.js'></script>
   <script src='js/game/JobEfficiencyEffect.js'></script>
   <script src='js/game/Player.js'></script>
+  <script src='js/game/Research.js'></script>
   <script src='js/game/Resource.js'></script>
   <script src='js/game/Upgrade.js'></script>
 
@@ -161,9 +184,12 @@
   <script src='js/rendering/GameRenderer.js'></script>
   <script src='js/rendering/BuildingsRenderer.js'></script>
   <script src='js/rendering/HUDRenderer.js'></script>
+  <script src='js/rendering/ResearchRenderer.js'></script>
   <script src='js/rendering/ResourceRenderer.js'></script>
-  <script src='js/rendering/UITab.js'></script>
   <script src='js/rendering/UIElement.js'></script>
+  <script src='js/rendering/UIProgressBar.js'></script>
+  <script src='js/rendering/UIResearch.js'></script>
+  <script src='js/rendering/UITab.js'></script>
   <script src='js/rendering/UpgradesRenderer.js'></script>
   <script src='js/rendering/WorkersRenderer.js'></script>
 

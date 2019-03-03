@@ -1,7 +1,6 @@
 class HUDRenderer extends GameRenderer {
     constructor (game) {
         super("HUDRenderer", game);
-        this.game = game;
 
         this.domGameContainer = document.getElementById('game');
         this.domTimer = document.getElementById('timer');
@@ -13,6 +12,7 @@ class HUDRenderer extends GameRenderer {
         this.buildingsTab = new UITab ('Buildings', document.getElementById('buildings-tab'), document.getElementById('buildings-tab-button'));
         this.cultureTab = new UITab ('Culture', document.getElementById('culture-tab'), document.getElementById('culture-tab-button'));
         this.upgradesTab = new UITab ('Upgrades', document.getElementById('upgrades-tab'), document.getElementById('upgrades-tab-button'));
+        this.researchTab = new UITab ('Research', document.getElementById('research-tab'), document.getElementById('research-tab-button'));
         this.activesTab = new UITab ('Actives', document.getElementById('actives-tab'), document.getElementById('actives-tab-button'));
 
         this.tabs = [
@@ -20,8 +20,11 @@ class HUDRenderer extends GameRenderer {
             this.buildingsTab,
             this.cultureTab,
             this.upgradesTab,
+            this.researchTab,
             this.activesTab
         ];
+
+        this.currentTab = null;
 
         this.setUpEventListeners();
         this.setUpDomEvents();
@@ -45,6 +48,8 @@ class HUDRenderer extends GameRenderer {
                 this.upgradesTab.enable();
             }
         });
+
+        Data.upgrades.researchTent.onBuy.addSubscription(() => this.researchTab.enable());
     }
 
     setUpDomEvents() {
@@ -83,6 +88,7 @@ class HUDRenderer extends GameRenderer {
         }
         this.tabs.forEach(t => t.deselect());
         tab.select();
+        this.currentTab = tab;
     }
 
     resetHoverInfoHoverFuntions() {
@@ -110,7 +116,8 @@ class HUDRenderer extends GameRenderer {
 
     getObjectToSave() {
         return {
-            tabs: this.tabs.map(tab => tab.getObjectToSave())
+            tabs: this.tabs.map(tab => tab.getObjectToSave()),
+            currentTab: this.currentTab.getObjectToSave()
         };
     }
 
@@ -121,5 +128,8 @@ class HUDRenderer extends GameRenderer {
                 tab.enable();
             }
         });
+
+        const currentTab = this.tabs.find(tab => tab.name === object.currentTab.name);
+        this.selectTab(currentTab);
     }
 }

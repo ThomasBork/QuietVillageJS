@@ -13,11 +13,9 @@ class Game {
 
     prepareNewGame () {
         this.player = new Player(this);
-        this.player.enableResource (RESOURCE_TYPE.WOOD);    
-        this.player.enableJob('Woodcutter');
-        this.player.enableBuilding(Data.buildings.hut);
+        Data.resources.wood.enable();
+        Data.jobs.woodcutter.enable();
 
-        this.player.resources[RESOURCE_TYPE.WOOD].amount = 200;
         this.player.addWorkers(1);
     }
 

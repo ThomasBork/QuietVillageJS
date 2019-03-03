@@ -1,7 +1,6 @@
 class UpgradesRenderer extends GameRenderer {
     constructor (game) {
         super("UpgradesRenderer", game);
-        this.game = game;
 
         this.upgrades = [];
 
