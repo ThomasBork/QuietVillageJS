@@ -9,6 +9,8 @@ class Game {
         this.onUpdate = new Observable();
         this.onWin = new Observable();
         this.onStop = new Observable();
+
+        this.maxTimeSinceLastUpdate = 24 * 60 * 60 * 1000;
     }
 
     prepareNewGame () {
@@ -35,12 +37,21 @@ class Game {
 
     update () {
         let timeSinceLastUpdate = new Date() - this.lastUpdate;
+
+        // Cap catch up duration
+        if (timeSinceLastUpdate > this.maxTimeSinceLastUpdate) {
+            timeSinceLastUpdate = this.maxTimeSinceLastUpdate;
+            this.lastUpdate.setTime(new Date().getTime() - this.maxTimeSinceLastUpdate);
+        }
+
+        // Update until caught up
         while (timeSinceLastUpdate > this.updateFrequency) {
             timeSinceLastUpdate -= this.updateFrequency;
             this.lastUpdate.setTime(this.lastUpdate.getTime() + this.updateFrequency);
 
             this.player.update(this.updateFrequency);
         }
+
         this.onUpdate.notify();
     }
 

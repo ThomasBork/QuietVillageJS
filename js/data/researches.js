@@ -1,14 +1,14 @@
 Data.initResearches = (player) => {
     Data.researches = {
-        fire: new Research({
-            name: 'Fire',
-            description: 'Burns',
-            researchRequired: 100
+        axeSharpener: new Research({
+            name: 'Axe Sharpener',
+            description: 'Improves the efficiency of the woodcutter job by 10%',
+            researchRequired: 150
         }),
-        ice: new Research({
-            name: 'Ice',
-            description: 'Chills',
-            researchRequired: 300
+        advancedLumbering: new Research({
+            name: 'Advanced Lumbering',
+            description: 'Enables the production of lumber mills',
+            researchRequired: 350
         })
     };
 

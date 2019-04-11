@@ -9,6 +9,10 @@
   <link href="css/style.css" type="text/css" rel="stylesheet">
 </head>
 <body>
+  <div id="loading-splash">
+    Resuming game...
+  </div>
+
   <div id="header">
     <span id="timer"></span>
     <span id="high-score-container">
@@ -40,6 +44,9 @@
       </li>
       <li>
         <div id="research-tab-button" class="tab-button">
+          <div id="research-tab-button-progress-bar" class="progress-bar-container">
+            <div class="progress-bar"></div>
+          </div>
           <img src="img/research-tab.png"/>
           <span class="tab-text">Research</span>
         </div>
@@ -98,7 +105,12 @@
 
     <div id="templates">
       <li class="resource">
-        <span class="label"></span>
+        <span class="label-container">
+            <span class="label"></span>
+            <span class="income-container">
+              (<span class="income"></span>/s)
+            </span>
+        </span>
         <span class="value"></span>
       </li>
 
@@ -172,8 +184,9 @@
   <script src='js/game/GameObject.js'></script>
   <script src='js/game/Building.js'></script>
   <script src='js/game/Game.js'></script>
+  <script src='js/game/IncomeEffect.js'></script>
   <script src='js/game/Job.js'></script>
-  <script src='js/game/JobEfficiencyEffect.js'></script>
+  <script src='js/game/GameObjectEfficiencyModifier.js'></script>
   <script src='js/game/Player.js'></script>
   <script src='js/game/Research.js'></script>
   <script src='js/game/Resource.js'></script>

@@ -19,6 +19,7 @@ class Player {
 
         // Resources
         this.onEnableResource = new Observable();
+        this.onIncomeCalculated = new Observable();
         Object.values(this.resources).forEach(resource => resource.onEnable.addSubscription(
             () => this.onEnableResource.notify(resource), this)
         );
@@ -75,6 +76,12 @@ class Player {
             }
         });
 
+        // this.gameObjects.forEach(object => {
+        //     object.effects.forEach(effect => {
+        //         if (effect instanceof )
+        //     });
+        // });
+
         const income = {};
         Object.values(RESOURCE_TYPE).forEach(type => {
             income[type] = flatIncome[type] * incomeFactors[type];
@@ -101,8 +108,15 @@ class Player {
         this.gameObjects.forEach(object => {
             if(this.isAcquired(object)) {
                 object.effects.forEach(effect => {
-                    if (effect instanceof JobEfficiencyEffect) {
-                        if (effect.job === job && effect.isMultiplier) {
+                    if (effect instanceof GameObjectEfficiencyModifier &&
+                        effect.object === job && 
+                        effect.isMultiplier
+                    ) {
+                        if (object instanceof Building) {
+                            if (object.amount > 0) {
+                                multiplier *= 1 + (effect.increase - 1) * object.amount;
+                            }
+                        } else {
                             multiplier *= effect.increase;
                         }
                     }
@@ -113,7 +127,7 @@ class Player {
     }
 
     setCurrentResearch (research) {
-        if (!research.completed) {
+        if (research === null || !research.completed) {
             this.currentResearch = research;
             this.onStartResearch.notify(research);
         }
@@ -187,9 +201,11 @@ class Player {
     }
 
     recalculateResourceCaps () {
+        this.resources[RESOURCE_TYPE.FAITH].isUncapped = true;
         this.resources[RESOURCE_TYPE.FOOD].cap = 250;
         this.resources[RESOURCE_TYPE.GOLD].cap = 250;
         this.resources[RESOURCE_TYPE.PELT].cap = 250;
+        this.resources[RESOURCE_TYPE.STONE].cap = 250;
         this.resources[RESOURCE_TYPE.WOOD].cap = 250;
 
         for(var i = 0; i<Data.buildings.woodShed.amount; i++) {
@@ -199,10 +215,13 @@ class Player {
 
     handleResourceIncome (dTime) {
         const timeFactor = dTime / 1000;
+        const currentIncome = this.income;
 
         Object.values(this.resources).forEach(resource => {
-            resource.amount += this.income[resource.type] * timeFactor;
+            resource.amount += currentIncome[resource.type] * timeFactor;
         });
+
+        this.onIncomeCalculated.notify(currentIncome);
     }
 
     capResources () {
@@ -219,7 +238,8 @@ class Player {
             const researchGained = Data.jobs.researcher.workerCount * researchPerResearcher * timeFactor;
             this.currentResearch.addResearch (researchGained);
             if (this.currentResearch.completed) {
-                this.currentResearch = null;
+                this.setCurrentResearch(null);
+                this.enableUnlockedObjects();
             }
         }
     }
@@ -268,17 +288,22 @@ class Player {
 
     getObjectToSave () {
         return {
+            workerCount: this.workerCount,
+            currentResearch: this.currentResearch === null ? null : this.currentResearch.getObjectToSave(),
             buildings: this.buildings.map(b => b.getObjectToSave()),
             jobs: this.jobs.map(j => j.getObjectToSave()),
             upgrades: this.upgrades.map(u => u.getObjectToSave()),
             researches: this.researches.map(r => r.getObjectToSave()),
-            workerCount: this.workerCount,
             resources: Object.values(this.resources).map(r => r.getObjectToSave())
         };
     }
 
     static loadFromObject(obj) {
         const player = new Player();
+
+        player.workerCount = obj.workerCount;
+
+        player.currentResearch = obj.currentResearch === null ? null : player.researches.find(r => r.name === obj.currentResearch.name);
 
         obj.jobs.forEach(objJob => {
             const job = player.jobs.find(j => j.name === objJob.name);
@@ -299,13 +324,11 @@ class Player {
         });
 
         obj.researches.forEach(objResearch => {
-            const research = player.researches.find(u => u.name === objResearch.name);
+            const research = player.researches.find(r => r.name === objResearch.name);
             research.completed = objResearch.completed;
             research.research = objResearch.research;
             research.enabled = objResearch.enabled;
         });
-
-        player.workerCount = obj.workerCount;
         
         obj.resources.forEach(objResource => {
             const resource = player.resources[objResource.type];

@@ -16,10 +16,22 @@ Data.initJobs = (player) => {
             resourceType: RESOURCE_TYPE.WOOD, 
             income: 1
         }),
+        stonecutter: new ResourceJob ({
+            name: "Stonecutter",
+            description: "Collect stone",
+            resourceType: RESOURCE_TYPE.STONE,
+            income: 0.1
+        }),
         hunter: new ResourceJob ({
             name: "Hunter", 
             description: "Hunt animals for their hide", 
             resourceType: RESOURCE_TYPE.PELT, 
+            income: 1
+        }),
+        priest: new ResourceJob ({
+            name: "Priest",
+            description: "Pray to raise the spirits of the workers",
+            resourceType: RESOURCE_TYPE.FAITH,
             income: 1
         }),
         researcher: new Job ({

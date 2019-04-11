@@ -3,11 +3,16 @@ class ResearchRenderer extends GameRenderer {
         super("ResearchRenderer", game);
         this.researches = [];
 
-        this.domResearchesContainer = document.getElementById("researches");
+        this.domResearchesContainer = document.getElementById('researches');
+        this.domResearchTabButtonProgessBarContainer = document.getElementById('research-tab-button-progress-bar');
+        this.domResearchTabButtonProgessBar = this.domResearchTabButtonProgessBarContainer.querySelector('.progress-bar');
+        this.researchTabButtonProgressBar = null;
 
         this.redrawResearches();
         
         this.setUpEventListeners();
+
+        this.updateTabButtonProgressBar();
     }
 
     setUpEventListeners() {
@@ -19,14 +24,18 @@ class ResearchRenderer extends GameRenderer {
 
     onStartResearch(research) {
         this.updateResearches();
+        this.updateTabButtonProgressBar();
+        this.updateTabButtonProgressBarValue();
     }
 
     onAddResearch(research, amount) {
         this.updateResearches();
+        this.updateTabButtonProgressBarValue();
     }
 
     onCompleteResearch(research) {
         this.updateResearches();
+        this.updateTabButtonProgressBar();
     }
 
     redrawResearches() {
@@ -62,5 +71,24 @@ class ResearchRenderer extends GameRenderer {
                 research.domElement.classList.add('completed');
             }
         });
+    }
+
+    updateTabButtonProgressBar() {
+        if (this.game.player.currentResearch) {
+            this.domResearchTabButtonProgessBarContainer.style.display = 'block';
+            this.researchTabButtonProgessBar = new UIProgressBar(this.domResearchTabButtonProgessBarContainer, this.domResearchTabButtonProgessBar);
+            this.researchTabButtonProgessBar.min = 0;
+            this.researchTabButtonProgessBar.max = this.game.player.currentResearch.researchRequired;
+    
+            this.updateTabButtonProgressBarValue();
+        } else {
+            this.domResearchTabButtonProgessBarContainer.style.display = 'none';
+        }
+    }
+
+    updateTabButtonProgressBarValue() {
+        if (this.game.player.currentResearch) {
+            this.researchTabButtonProgessBar.setValue(this.game.player.currentResearch.research);
+        }
     }
 }

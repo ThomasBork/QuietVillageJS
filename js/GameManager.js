@@ -10,6 +10,7 @@ class GameManager {
         if (localStorage.getItem('savedGame')) {
             this.loadGame();
         }
+        this.hideLoadingScreen();
     }
     
     newGame() {
@@ -22,14 +23,35 @@ class GameManager {
         this.game.start();
     }
 
+    showLoadingScreen () {
+        document.getElementById('loading-splash').style.display = 'block';
+    }
+
+    hideLoadingScreen () {
+        document.getElementById('loading-splash').style.display = 'none';
+    }
+
     loadGame () {
+        this.showLoadingScreen();
+
         if(this.game) {
             this.game.stop();
         }
         const saveGame = SaveGame.fromJson(localStorage.getItem('savedGame'));
         const gameObject = saveGame.game;
-        this.game = Game.loadFromObject(gameObject);
+
+        try {
+            this.game = Game.loadFromObject(gameObject);
+        }
+        catch (e) {
+            this.hideLoadingScreen();
+            throw e;
+        }
+        
         this.game.resume();
+
+        this.hideLoadingScreen();
+
         this.setUpRenderers();
         this.gameRenderers.forEach(renderer => {
             const rendererState = saveGame.rendererStates[renderer.name];

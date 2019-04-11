@@ -15,6 +15,7 @@ class ResourceRenderer extends GameRenderer {
         this.game.onUpdate.addSubscription(this.onUpdateGame, this);
 
         this.game.player.onEnableResource.addSubscription(this.onEnableResource, this);
+        this.game.player.onIncomeCalculated.addSubscription(this.onIncomeCalculated, this);
     }
 
     onUpdateGame () {
@@ -23,6 +24,14 @@ class ResourceRenderer extends GameRenderer {
 
     onEnableResource (resource) {
         this.redrawResources();
+    }
+
+    onIncomeCalculated (resources) {
+        this.resources.forEach(resource => {
+            const income = resources[resource.gameElement.type];
+            const domIncome = resource.domElement.querySelector('.income');
+            domIncome.innerHTML = this.prettyNumber(income, 2, 0);
+        });
     }
 
     redrawResources () {
@@ -48,7 +57,10 @@ class ResourceRenderer extends GameRenderer {
     updateResources() {
         this.resources.forEach(resource => {
             const valueElement = resource.domElement.querySelector('.value');
-            const text = this.prettyNumber(resource.gameElement.amount, 0) + ' / ' + this.prettyNumber(resource.gameElement.cap, 0);
+            let text = this.prettyNumber(resource.gameElement.amount, 0);
+            if (!resource.gameElement.isUncapped){
+                text += ' / ' + this.prettyNumber(resource.gameElement.cap, 0);
+            }
             valueElement.innerHTML = text;
         });
     }

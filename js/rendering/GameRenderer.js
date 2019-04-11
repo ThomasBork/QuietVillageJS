@@ -48,15 +48,25 @@ class GameRenderer {
         }
     }
 
+    padNumberWithZeroes (number, length) {
+        let numberString = '' + number;
+        while (numberString.length < length) {
+            numberString = '0' + numberString;
+        }
+        return numberString;
+    }
+
     prettyDuration (timeInMilliseconds) {
         const timeInSeconds = Math.floor(timeInMilliseconds / 1000);
         const seconds = timeInSeconds % 60;
-        const minutes = Math.floor(timeInSeconds / 60);
-        let text = null;
-        if (seconds < 10) {
-            text = minutes + ':0' + seconds;
-        } else {
-            text = minutes + ':' + seconds;
+        const minutes = Math.floor(((timeInSeconds - seconds) / 60) % 60);
+        const hours = Math.floor(((timeInSeconds - minutes * 60 - seconds) / (60 * 60)) % 24);
+        const days = Math.floor(timeInSeconds / (24 * 60 * 60));
+        let text = this.padNumberWithZeroes(hours, 2) + ':' 
+            + this.padNumberWithZeroes(minutes, 2) + ':' 
+            + this.padNumberWithZeroes(seconds, 2);
+        if (days > 0) {
+            text = days + ' days ' + text;
         }
         return text;
     }
