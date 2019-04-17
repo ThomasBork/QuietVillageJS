@@ -1,6 +1,6 @@
 Data.initResources = (player) => {
     Data.resources = {
-        faith: new Resource(RESOURCE_TYPE.FAITH),
+        devotion: new Resource(RESOURCE_TYPE.DEVOTION),
         food: new Resource(RESOURCE_TYPE.FOOD),
         gold: new Resource(RESOURCE_TYPE.GOLD),
         pelt: new Resource(RESOURCE_TYPE.PELT),

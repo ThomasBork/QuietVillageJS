@@ -63,7 +63,7 @@ class HUDRenderer extends GameRenderer {
     }
 
     onUpdateGame () {
-        this.drawTimer();
+        //this.drawTimer();
     }
 
     onWinGame () {
@@ -106,7 +106,7 @@ class HUDRenderer extends GameRenderer {
     unload () {
         super.unload();
         
-        this.domTimer.innerHTML = '';
+        //this.domTimer.innerHTML = '';
 
         this.domGameContainer.style.display = 'none';
 

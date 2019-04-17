@@ -21,6 +21,10 @@ class Job extends GameObject {
         this.onChangeWorkerCount.notify (value);
     }
 
+    getEffectMultiplier() {
+        return this.workerCount;
+    }
+
     getObjectToSave() {
         return {
             name: this.name,

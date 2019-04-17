@@ -1,6 +1,6 @@
 Data.initPrerequisites = () => {
     // Resources
-    Data.resources.faith.prerequisites = [Data.buildings.church];
+    Data.resources.devotion.prerequisites = [Data.buildings.church];
     Data.resources.food.prerequisites = [undefined];
     Data.resources.gold.prerequisites = [undefined];
     Data.resources.stone.prerequisites = [Data.upgrades.pickaxe];

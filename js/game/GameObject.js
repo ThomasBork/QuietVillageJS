@@ -18,4 +18,8 @@ class GameObject {
             this.onEnable.notify();
         }
     }
+
+    getEffectMultiplier () {
+        return 1;
+    }
 }

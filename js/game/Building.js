@@ -41,6 +41,10 @@ class Building extends GameObject {
         this.onBuy.notify(this.amount);
     }
 
+    getEffectMultiplier() {
+        return this.amount;
+    }
+
     getObjectToSave () {
         return {
             name: this.name,

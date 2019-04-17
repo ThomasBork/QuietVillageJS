@@ -31,7 +31,7 @@ Data.initJobs = (player) => {
         priest: new ResourceJob ({
             name: "Priest",
             description: "Pray to raise the spirits of the workers",
-            resourceType: RESOURCE_TYPE.FAITH,
+            resourceType: RESOURCE_TYPE.DEVOTION,
             income: 1
         }),
         researcher: new Job ({

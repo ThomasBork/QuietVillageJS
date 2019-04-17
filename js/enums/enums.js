@@ -1,5 +1,5 @@
 const RESOURCE_TYPE = {
-    FAITH: "Faith",
+    DEVOTION: "Devotion",
     FOOD: "Food",
     GOLD: "Gold",
     PELT: "Pelt",

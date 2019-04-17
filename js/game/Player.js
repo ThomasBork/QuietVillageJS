@@ -4,6 +4,7 @@ class Player {
         this.jobs = [];
         this.upgrades = [];
         this.researches = [];
+        this.hiddenGameObjects = [];
 
         this.workerCount = 0;
         this.resources = {};
@@ -15,7 +16,17 @@ class Player {
         Data.initJobs(this);
         Data.initUpgrades(this);
         Data.initPrerequisites(this);
+        Data.initHiddenGameObjects(this);
         Data.initEffects(this);
+
+        this.gameObjects = [
+            ...this.buildings, 
+            ...this.hiddenGameObjects,
+            ...this.jobs, 
+            ...this.researches, 
+            ...this.upgrades, 
+            ...Object.values(this.resources)
+        ];
 
         // Resources
         this.onEnableResource = new Observable();
@@ -69,18 +80,15 @@ class Player {
             incomeFactors[type] = 1;
         });
 
-        this.jobs.forEach(job => {
-            if (job instanceof ResourceJob) {
-                let multiplier = this.getJobMultiplier(job);
-                flatIncome[job.resourceType] += job.workerCount * job.income * multiplier;
+        this.applyForEachGameObjectEffect(IncomeEffect, (gameObject, effect, efficiencyMultiplier) => {
+            if (effect.isMultiplier) {
+                const multiplier = 1 + (effect.increase - 1) * gameObject.getEffectMultiplier();
+                incomeFactors[effect.resource] *= multiplier * efficiencyMultiplier;
+            } else {
+                const flat = effect.increase * gameObject.getEffectMultiplier();
+                flatIncome[effect.resource] += flat * efficiencyMultiplier;
             }
         });
-
-        // this.gameObjects.forEach(object => {
-        //     object.effects.forEach(effect => {
-        //         if (effect instanceof )
-        //     });
-        // });
 
         const income = {};
         Object.values(RESOURCE_TYPE).forEach(type => {
@@ -93,32 +101,29 @@ class Player {
         return this.jobs.find(job => job.name === 'Idle');
     }
 
-    get gameObjects () {
-        return [
-            ...this.buildings, 
-            ...this.upgrades, 
-            ...this.jobs, 
-            ...this.researches, 
-            ...Object.values(this.resources)
-        ];
+    applyForEachGameObjectEffect(effectType, callback) {
+        this.gameObjects.forEach(gameObject => {
+            if(this.isAcquired(gameObject)) {
+                const efficiencyMultiplier = this.getGameObjectEfficiencyMultiplier(gameObject);
+                gameObject.effects.forEach(effect => {
+                    if (effect instanceof effectType) {
+                        callback(gameObject, effect, efficiencyMultiplier);
+                    }
+                });
+            }
+        });
     }
 
-    getJobMultiplier (job) {
+    getGameObjectEfficiencyMultiplier (gameObject) {
         let multiplier = 1;
-        this.gameObjects.forEach(object => {
-            if(this.isAcquired(object)) {
-                object.effects.forEach(effect => {
+        this.gameObjects.forEach(otherGameObject => {
+            if(this.isAcquired(otherGameObject)) {
+                otherGameObject.effects.forEach(effect => {
                     if (effect instanceof GameObjectEfficiencyModifier &&
-                        effect.object === job && 
+                        effect.object === gameObject && 
                         effect.isMultiplier
                     ) {
-                        if (object instanceof Building) {
-                            if (object.amount > 0) {
-                                multiplier *= 1 + (effect.increase - 1) * object.amount;
-                            }
-                        } else {
-                            multiplier *= effect.increase;
-                        }
+                        multiplier *= 1 + (effect.increase - 1) * otherGameObject.getEffectMultiplier();
                     }
                 });
             }
@@ -201,16 +206,25 @@ class Player {
     }
 
     recalculateResourceCaps () {
-        this.resources[RESOURCE_TYPE.FAITH].isUncapped = true;
+        this.resources[RESOURCE_TYPE.DEVOTION].isUncapped = true;
         this.resources[RESOURCE_TYPE.FOOD].cap = 250;
         this.resources[RESOURCE_TYPE.GOLD].cap = 250;
         this.resources[RESOURCE_TYPE.PELT].cap = 250;
         this.resources[RESOURCE_TYPE.STONE].cap = 250;
         this.resources[RESOURCE_TYPE.WOOD].cap = 250;
 
-        for(var i = 0; i<Data.buildings.woodShed.amount; i++) {
-            this.resources[RESOURCE_TYPE.WOOD].cap += 100;
+        this.applyForEachGameObjectEffect(ResourceCap, (gameObject, effect, efficiencyMultiplier) => {
+            const increase = effect.increase * gameObject.getEffectMultiplier();
+            this.resources[effect.resource].cap += increase * efficiencyMultiplier;
+        });
+    }
+
+    updateResourceDecay() {
+        let devotionDecay = this.resources[RESOURCE_TYPE.DEVOTION].amount / 100;
+        if (0 < devotionDecay && devotionDecay < 0.5) {
+            devotionDecay = 0.5;
         }
+        Data.hiddenGameObjects.devotionDecay.effects[0].increase = -devotionDecay;
     }
 
     handleResourceIncome (dTime) {
@@ -219,6 +233,9 @@ class Player {
 
         Object.values(this.resources).forEach(resource => {
             resource.amount += currentIncome[resource.type] * timeFactor;
+            if (resource.amount < 0) {
+                resource.amount = 0;
+            }
         });
 
         this.onIncomeCalculated.notify(currentIncome);
@@ -233,7 +250,7 @@ class Player {
     handleResearch(dTime) {
         if (this.currentResearch && !this.currentResearch.completed) {
             const timeFactor = dTime / 1000;
-            let multiplier = this.getJobMultiplier(Data.jobs.researcher);
+            let multiplier = this.getGameObjectEfficiencyMultiplier(Data.jobs.researcher);
             const researchPerResearcher = 1 * multiplier;
             const researchGained = Data.jobs.researcher.workerCount * researchPerResearcher * timeFactor;
             this.currentResearch.addResearch (researchGained);
@@ -245,6 +262,7 @@ class Player {
     }
 
     update (dTime) {
+        this.updateResourceDecay();
         this.handleResourceIncome(dTime);
         this.capResources();
         this.handleResearch(dTime);
@@ -261,6 +279,8 @@ class Player {
             return object.completed;
         } else if (object instanceof Building) {
             return object.amount > 0;
+        } else if (object instanceof HiddenGameObject) {
+            return object.enabled;
         } else if (object === undefined) {
             return false;
         } else {
@@ -335,6 +355,8 @@ class Player {
             resource.amount = objResource.amount;
             resource.enabled = objResource.enabled;
         });
+        
+        player.enableUnlockedObjects();
 
         return player;
     }
