@@ -10,10 +10,17 @@
 </head>
 <body>
   <div id="loading-splash">
-    Resuming game...
+    <div>Resuming game...</div>
+    <div class="progress-bar-container">
+      <div class="progress-bar"></div>
+    </div>
   </div>
 
   <div id="header">
+    <span id="title-container">
+      <div id="title">Quiet Village</div>
+      <div id="version">v1.0.1</div>
+    </span>
     <span id="timer"></span>
     <span id="high-score-container">
       <span>High Score:</span>
@@ -171,10 +178,12 @@
   <script src='js/shared/utils.js'></script>
   <script src='js/shared/Observable.js'></script>
   <script src='js/enums/enums.js'></script>
+  <script src='js/game/hero/enums.js'></script>
 
   <script src='js/data/Data.js'></script>
   <script src='js/data/buildings.js'></script>
   <script src='js/data/effects.js'></script>
+  <script src='js/data/heroArenas.js'></script>
   <script src='js/data/hiddenGameObjects.js'></script>
   <script src='js/data/jobs.js'></script>
   <script src='js/data/researches.js'></script>
@@ -185,10 +194,17 @@
   <script src='js/game/GameObject.js'></script>
   <script src='js/game/Building.js'></script>
   <script src='js/game/Game.js'></script>
+  <script src='js/game/GameObjectEfficiencyModifier.js'></script>
+  <script src='js/game/hero/HeroCharacter.js'></script>
+  <script src='js/game/hero/Hero.js'></script>
+  <script src='js/game/hero/HeroArena.js'></script>
+  <script src='js/game/hero/HeroArenaMonster.js'></script>
+  <script src='js/game/hero/HeroArenaMonsterType.js'></script>
+  <script src='js/game/hero/HeroAttribute.js'></script>
+  <script src='js/game/hero/HeroSystem.js'></script>
   <script src='js/game/HiddenGameObject.js'></script>
   <script src='js/game/IncomeEffect.js'></script>
   <script src='js/game/Job.js'></script>
-  <script src='js/game/GameObjectEfficiencyModifier.js'></script>
   <script src='js/game/Player.js'></script>
   <script src='js/game/Research.js'></script>
   <script src='js/game/Resource.js'></script>
@@ -202,6 +218,7 @@
   <script src='js/rendering/HUDRenderer.js'></script>
   <script src='js/rendering/ResearchRenderer.js'></script>
   <script src='js/rendering/ResourceRenderer.js'></script>
+  <script src='js/rendering/ResumeRenderer.js'></script>
   <script src='js/rendering/UIElement.js'></script>
   <script src='js/rendering/UIProgressBar.js'></script>
   <script src='js/rendering/UIResearch.js'></script>

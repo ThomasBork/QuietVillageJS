@@ -9,8 +9,9 @@ class GameManager {
     
         if (localStorage.getItem('savedGame')) {
             this.loadGame();
+        } else {
+            this.hideLoadingScreen();
         }
-        this.hideLoadingScreen();
     }
     
     newGame() {
@@ -20,14 +21,19 @@ class GameManager {
         this.game = new Game();
         this.game.prepareNewGame();
         this.setUpRenderers();
+        document.getElementById('game').style.display = 'flex';
         this.game.start();
     }
 
     showLoadingScreen () {
+        document.getElementById('header').style.display = 'none';
+        document.getElementById('game').style.display = 'none';
         document.getElementById('loading-splash').style.display = 'block';
     }
 
     hideLoadingScreen () {
+        document.getElementById('header').style.display = 'block';
+        document.getElementById('game').style.display = 'flex';
         document.getElementById('loading-splash').style.display = 'none';
     }
 
@@ -48,9 +54,14 @@ class GameManager {
             throw e;
         }
         
-        this.game.resume();
+        let resumeRenderer = new ResumeRenderer(this.game);
 
-        this.hideLoadingScreen();
+        this.game.onResumeEnded.addSubscription(this.onGameLoaded, this);
+        this.game.resume();
+    }
+
+    onGameLoaded () {
+        const saveGame = SaveGame.fromJson(localStorage.getItem('savedGame'));
 
         this.setUpRenderers();
         this.gameRenderers.forEach(renderer => {
@@ -59,6 +70,9 @@ class GameManager {
                 renderer.loadStateFromObject(rendererState);
             }
         });
+        
+        this.hideLoadingScreen();
+
         this.game.start();
     }
 

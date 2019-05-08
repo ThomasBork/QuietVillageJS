@@ -1,5 +1,7 @@
 class Player {
     constructor () {
+        this.heroSystem = new HeroSystem(this);
+
         this.buildings = [];
         this.jobs = [];
         this.upgrades = [];
@@ -15,6 +17,7 @@ class Player {
         Data.initResources(this);
         Data.initJobs(this);
         Data.initUpgrades(this);
+        Data.initHeroArenas(this);
         Data.initPrerequisites(this);
         Data.initHiddenGameObjects(this);
         Data.initEffects(this);
@@ -25,6 +28,7 @@ class Player {
             ...this.jobs, 
             ...this.researches, 
             ...this.upgrades, 
+            ...this.heroSystem.heroArenas,
             ...Object.values(this.resources)
         ];
 
@@ -266,6 +270,7 @@ class Player {
         this.handleResourceIncome(dTime);
         this.capResources();
         this.handleResearch(dTime);
+        this.heroSystem.update(dTime);
     }
 
     isAcquired (object) {

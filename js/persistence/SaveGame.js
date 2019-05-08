@@ -1,6 +1,6 @@
 class SaveGame {
     constructor () {
-        this.version = "0.01";
+        this.version = SaveGame.currentVersion;
         this.game = null;
         this.rendererStates = {};
     }
@@ -10,11 +10,24 @@ class SaveGame {
     }
 
     static fromJson (json) {
-        const obj = JSON.parse(json);
+        let obj = JSON.parse(json);
+        if (obj.version === '0.01') {
+            obj = SaveGame.upgradeFrom001(obj);
+        }
         const saveGame = new SaveGame();
         saveGame.version = obj.version;
         saveGame.game = obj.game;
         saveGame.rendererStates = obj.rendererStates;
         return saveGame;
     }
+
+    static upgradeFrom001 (obj) {
+        let json = JSON.stringify(obj);
+        json = json
+            .replace('FAITH', 'DEVOTION')
+            .replace('Faith', 'Devotion');
+        return JSON.parse(json);
+    }
 }
+
+SaveGame.currentVersion = '0.2.0';

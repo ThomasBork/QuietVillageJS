@@ -72,6 +72,20 @@ ul {
     background-color: #303030;
 }
 
+#title-container {
+    float: left;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+#title {
+    font-size: 25px;
+}
+
+#version {
+    font-size: 10px;
+}
+
 #timer {
     font-size: 40px;
     margin-left: 5px;

@@ -11,4 +11,20 @@ class Utils {
         Object.keys(extension).forEach(key => result[key] = extension[key]);
         return result;
     }
+
+    static randomFloat (min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    static randomInt (min, max) {
+        return Math.floor(Utils.randomFloat(min, max + 1));
+    }
+
+    static randomElement (array) {
+        return array[Utils.randomInt(0, array.length - 1)];
+    }
+
+    static clone (objOrArray) {
+        return JSON.parse(JSON.stringify(objOrArray));
+    }
 }

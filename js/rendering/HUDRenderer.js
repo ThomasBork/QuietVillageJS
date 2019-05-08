@@ -3,6 +3,7 @@ class HUDRenderer extends GameRenderer {
         super("HUDRenderer", game);
 
         this.domGameContainer = document.getElementById('game');
+        this.domVersion = document.getElementById('version');
         this.domTimer = document.getElementById('timer');
         this.domHighScore = document.getElementById('high-score');
         this.domHighScoreContainer = document.getElementById('high-score-container');
@@ -30,6 +31,7 @@ class HUDRenderer extends GameRenderer {
         this.setUpDomEvents();
         
         this.selectTab(this.workersTab);
+        this.domVersion.innerHTML = 'v' + SaveGame.currentVersion;
     }
 
     setUpEventListeners() {
@@ -59,7 +61,7 @@ class HUDRenderer extends GameRenderer {
     onStartGame () {
         this.resetHoverInfoHoverFuntions();
 
-        this.domGameContainer.style.display = 'flex';
+        //this.domGameContainer.style.display = 'flex';
     }
 
     onUpdateGame () {
