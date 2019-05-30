@@ -9,6 +9,19 @@ a {
     color: #6060ff;
 }
 
+.flexbox {
+    display: flex;
+}
+
+.flexbox-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.row {
+    width: 100%;
+}
+
 .button {
     background-color: #6060ff;
     display: inline-block;
@@ -105,8 +118,13 @@ ul {
 /* Game */
 #game {
     display: none;
-    justify-content: space-between;
+    justify-content: center;
     height: calc(100% - 50px);
+}
+
+#game > .tab {
+    width: 500px;
+    flex: 0 0 500px;
 }
 
 .title {
@@ -161,11 +179,10 @@ ul {
 }
 
 .tab {
-    display: flex;
     flex: 1 0 0;
 }
 
-#research-tab-button-progress-bar {
+.tab-button-progress-bar {
     width: 100%;
     height: 10px;
 }
@@ -175,7 +192,7 @@ ul {
 #workers-container {
     margin-top: 5px;
     padding: 5px;
-    width: 400px;
+    width: 500px;
     background-color: #303030;
 }
 
@@ -192,6 +209,50 @@ ul {
     vertical-align: middle;
 }
 
+/* Hero */
+#hero-tab-buttons {
+    display: flex;
+}
+
+#hero-tab-buttons > li > .tab-button {
+    height: 50px;
+    width: 100px;
+    font-size: 12px;
+}
+
+#hero-tab-buttons > li > .tab-button > img {
+    flex: 0 0 32px;
+    height: 32px;
+    width: 32px;
+}
+
+#hero-tab-content {
+    width: 100%;
+}
+
+#hero-tab-content > .tab {
+    width: 100%;
+}
+
+#hero-arena-current-arena {
+    height: 300px;
+    width: 100%;
+}
+
+#hero-arena-current-arena .background {
+    height: 100%;
+    width: 100%;
+}
+
+.arena .image {
+    height: 200px;
+    width: 300px;
+}
+
+.arena {
+    margin: 5px;
+}
+
 /* Tile object lists */
 .tile-object-list {
     overflow-y: auto;
@@ -201,7 +262,7 @@ ul {
 }
 
 .tile-object-line {
-    width: 400px;
+    width: 500px;
     height: 100px;
     position: relative;
     background-color: #303030;

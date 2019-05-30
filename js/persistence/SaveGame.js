@@ -26,8 +26,10 @@ class SaveGame {
         json = json
             .replace('FAITH', 'DEVOTION')
             .replace('Faith', 'Devotion');
-        return JSON.parse(json);
+        const newObj = JSON.parse(json);
+        newObj.version = '0.2.0';
+        return newObj;
     }
 }
 
-SaveGame.currentVersion = '0.2.0';
+SaveGame.currentVersion = '0.3.0';

@@ -19,6 +19,7 @@ class Game {
 
     prepareNewGame () {
         this.player = new Player(this);
+        this.player.heroSystem.init();
         Data.resources.wood.enable();
         Data.jobs.woodcutter.enable();
 

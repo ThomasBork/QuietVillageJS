@@ -24,7 +24,7 @@ Data.initHeroArenas = (player) => {
             ]
         }),
         jungle: new HeroArena({
-            name: 'Jungle',
+            name: 'Swamp',
             description: 'Strong monsters! Good loot.',
             level: 5,
             monsterTypes: [

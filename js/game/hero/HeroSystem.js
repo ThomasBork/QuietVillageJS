@@ -4,11 +4,12 @@ class HeroSystem {
         this.hero = null;
         this.heroArenas = [];
         this.currentArena = null;
+        this.init();
     }
 
     init () {
         this.hero = new Hero({
-            name: "My first hero", 
+            name: "Johnny", 
             baseAttributes: HeroAttribute.BuildSet({
                 HEALTH: 300,
                 SPEED: 1,

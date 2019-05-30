@@ -31,4 +31,5 @@ Data.initPrerequisites = () => {
     // Researches
     Data.researches.axeSharpener.prerequisites = [];
     Data.researches.advancedLumbering.prerequisites = [];
+    Data.researches.heroism.prerequisites = [Data.buildings.church];
 };

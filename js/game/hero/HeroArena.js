@@ -13,6 +13,8 @@ class HeroArena extends GameObject {
 
         this.currentMonster = null;
         this.currentHero = null;
+
+        this.onHeroDeath = new Observable();
     }
 
     enter (hero) {
@@ -41,7 +43,7 @@ class HeroArena extends GameObject {
         if (this.currentMonster.isAlive) {
             this.updateCharacterAttack(dTime, this.currentMonster, this.currentHero);
             if (!this.currentHero.isAlive) {
-                this.leave();
+                this.onHeroDeath.notify();
             }
         } else {
             this.spawnMonster();

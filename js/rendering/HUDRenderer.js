@@ -10,6 +10,7 @@ class HUDRenderer extends GameRenderer {
 
         // Tabs
         this.workersTab = new UITab ('Workers', document.getElementById('workers-tab'), document.getElementById('workers-tab-button'));
+        this.heroTab = new UITab ('Hero', document.getElementById('hero-tab'), document.getElementById('hero-tab-button'));
         this.buildingsTab = new UITab ('Buildings', document.getElementById('buildings-tab'), document.getElementById('buildings-tab-button'));
         this.cultureTab = new UITab ('Culture', document.getElementById('culture-tab'), document.getElementById('culture-tab-button'));
         this.upgradesTab = new UITab ('Upgrades', document.getElementById('upgrades-tab'), document.getElementById('upgrades-tab-button'));
@@ -18,6 +19,7 @@ class HUDRenderer extends GameRenderer {
 
         this.tabs = [
             this.workersTab,
+            this.heroTab,
             this.buildingsTab,
             this.cultureTab,
             this.upgradesTab,
@@ -52,6 +54,26 @@ class HUDRenderer extends GameRenderer {
         });
 
         Data.upgrades.researchTent.onBuy.addSubscription(() => this.researchTab.enable());
+        
+        Data.researches.heroism.onComplete.addSubscription(() => this.heroTab.enable());
+    }
+
+    reenableAllTabs() {
+        if (Data.jobs.woodcutter.workerCount >= 1) {
+            this.buildingsTab.enable();
+        }
+
+        if (Data.buildings.hut.amount >= 3) {
+            this.upgradesTab.enable();
+        }
+
+        if (Data.upgrades.researchTent.bought) {
+            this.researchTab.enable();
+        }
+
+        if (Data.researches.heroism.completed) {
+            this.heroTab.enable();
+        }
     }
 
     setUpDomEvents() {
@@ -133,5 +155,7 @@ class HUDRenderer extends GameRenderer {
 
         const currentTab = this.tabs.find(tab => tab.name === object.currentTab.name);
         this.selectTab(currentTab);
+
+        this.reenableAllTabs();
     }
 }

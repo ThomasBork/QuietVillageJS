@@ -23,8 +23,6 @@ class BuildingsRenderer extends GameRenderer {
     }
 
     onBuyBuilding(building) {
-        const uibuilding = this.buildings.find(p => p.gameElement === building);
-
         this.updateBuildings();
     }
 

@@ -92,6 +92,8 @@ class GameManager {
         this.gameRenderers = [
             new HUDRenderer(this.game),
             new BuildingsRenderer(this.game),
+            new HeroHUDRenderer(this.game),
+            new HeroArenaRenderer(this.game),
             new ResearchRenderer(this.game),
             new ResourceRenderer(this.game),
             new UpgradesRenderer(this.game),

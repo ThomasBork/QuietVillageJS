@@ -9,6 +9,11 @@ Data.initResearches = (player) => {
             name: 'Advanced Lumbering',
             description: 'Enables the production of lumber mills',
             researchRequired: 350
+        }),
+        heroism: new Research({
+            name: 'Heroism',
+            description: 'Introduces the village hero',
+            researchRequired: 500
         })
     };
 
